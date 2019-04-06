@@ -1,0 +1,225 @@
+---
+title: "How to use this package"
+author: "Mauricio Vargas S."
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{How to use this package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Package data
+
+## Available tables
+
+Provided this package takes data from an API, it is useful to know which tables can be accessed:
+
+```{r tables, eval = T}
+library(tradestatistics)
+
+ots_attributes_tables
+```
+
+## Country codes
+
+If you don't know a certain country code you can explore this data before using the functions.
+
+```{r countries, eval = T}
+ots_attributes_countries
+```
+
+## Product codes
+
+```{r range, message=FALSE, warning=FALSE, include=FALSE}
+year_range <- purrr::as_vector(jsonlite::fromJSON("https://api.tradestatistics.io/year_range"))
+min_year <- min(year_range)
+max_year <- max(year_range)
+```
+
+Open Trade Statistics (aka OTS) uses data classified under either HS92, HS96, HS02 and HS07 (Harmonized System) and SITC rev. 1 and rev. 2 (Standard International Trade Classification). A part of our project is to combine all of this under HS07 codes, and to make it available for the period `r min_year`-`r max_year` even for the years before 2007 when HS07 was not in use.
+
+As [UN Comtrade](https://comtrade.un.org/db/mr/rfglossarylist.aspx) explains both HS and SITC are trade classifications that are updated by releasing new revisions, and when a classification is released then it remains unaltered. For example, HS92 was released in 1992 and its product codes remain unaltered until today, while newer classifications (e.g. HS07) were created to include newer products (e.g. it was important to provide more details about electronic products that did not exist when HS92 was created).
+
+Each of these classifications consists in numeric codes and a detailed product name associated to each code, for example HS92 (and all HS revisions) contain 4 and 6 digits long codes while SITC does only contain 4 digits long codes in our cleaned datasets (there are 5 digits long SITC codes that we are not using):
+
+```{r products, eval = T}
+ots_attributes_countries
+```
+
+Each product belongs to a group with a given name and number according to HS classification.
+
+# Package functions
+
+## Country code
+
+The end user can use this function to find an ISO code by providing a country name. This works by implementing partial search.
+
+Basic examples:
+```{r country_code}
+# Single match with no replacement
+ots_country_code("Chile")
+
+# Single match with replacement
+ots_country_code("America")
+
+# Double match with no replacement
+ots_country_code("Germany")
+```
+
+## Product code
+
+The end user can use this function to find a product code by providing a product name. This works by implementing partial search.
+
+```{r product_code}
+ots_product_code("wine")
+```
+
+## Trade data
+
+This function downloads data for a single year and needs (at least) some filter parameters according to the query type.
+ 
+### Bilateral trade at product level (Year - Reporter - Partner - Product Code)
+
+If we want Chile-Argentina bilateral trade at product level in 1965:
+```{r yrpc1, eval = T}
+ots_create_tidy_data(years = 1965, reporters = "chl", partners = "arg")
+```
+
+Which is the same as:
+```{r yrpc2, eval = T}
+ots_create_tidy_data(years = 1965, reporters = "chl", partners = "arg", table = "yrpc")
+```
+
+If we want Chile-Argentina bilateral trade at product level in 1965-1967:
+```{r yrpc3, eval = T}
+ots_create_tidy_data(years = 1965:1967, reporters = "chl", partners = "arg")
+```
+
+If we want Chile-Argentina bilateral trade at product level in 1965, 1966 and 1968:
+```{r yrpc4, eval = T}
+ots_create_tidy_data(years = c(1965,1966,1968), reporters = "chl", partners = "arg")
+```
+
+If we want Chile-Argentina bilateral trade at product level in 1965 and 1966 with respect to product "0101" (Horses, asses, mules and hinnies; live):
+```{r yrpc5, eval = T}
+ots_create_tidy_data(years = 1965:1966, reporters = "chl", partners = "arg", products = "0101")
+```
+
+But if we want Chile-Argentina bilateral trade at product level in 1965 with respect to all the codes that match the string "horse" at product or group name:
+```{r yrpc6, eval = T}
+ots_create_tidy_data(years = 1965, reporters = "chl", partners = "arg", products = "horse")
+```
+
+Another option is to pass more than one year, reporter, partner and/or product (here "0101" means to perform an exact search while "apple" will do string matching):
+```{r yrpc7, eval = T}
+ots_create_tidy_data(years = 1965, reporters = c("chl", "per"), partners = c("arg", "bra"), products = c("0101", "apple"))
+```
+
+This latter option works with a different number of reporters and partners:
+```{r yrpc8, eval = T}
+ots_create_tidy_data(years = 1965, reporters = "chl", partners = c("arg", "bra", "per"), products = c("0101", "apple"))
+```
+
+Here some fields deserve an explanation:
+
+* `product_code`: HS07 product codes (e.g. according to the \code{products} table within this package, 0101 stands for "Horses, etc.")
+* `product_code_length`: How many digits does `product_code` contain, this can be useful to filter by depth when using HS codes (HS 6 digits is a more detailed version of HS 4 digits, and therefore you don't have to sum both or you'll be counting exports/imports twice)
+* `group_code`: International categorization of group products defined after product ID
+* `group_name`: English name corresponding to `group_id`
+* `export_value_usd`: Exports measured in nominal United States Dollars (USD)
+* `import_value_usd`: Imports measured in nominal United States Dollars (USD)
+* `export_value_usd_percentage_change_1_year`: Nominal increase/decrease in exports measured as percentage with respect to last year
+* `export_value_usd_percentage_change_5_years`: Nominal increase/decrease in exports measured as percentage with respect to five years ago
+* `export_value_usd_change_1_year`: Nominal increase/decrease in exports measured in USD with respect to last year
+* `export_value_usd_change_5_years`: Nominal increase/decrease in exports measured in USD with respect to five years ago
+
+### Bilateral trade at aggregated level (Year - Reporter - Partner)
+
+If we want Chile-Argentina bilateral trade at aggregated level in 1965:
+```{r yrp1, eval = T}
+ots_create_tidy_data(years = 1965, reporters = "chl", partners = "arg", table = "yrp")
+```
+
+If we want Chile-Argentina bilateral trade at aggregated level in 1965 and 1967:
+```{r yrp2, eval = T}
+ots_create_tidy_data(years = c(1965,1967), reporters = "chl", partners = "arg", table = "yrp")
+```
+
+Another option is to pass more than one year, reporter and/or partner:
+```{r yrp3, eval = T}
+ots_create_tidy_data(years = 1965:1966, reporters = c("chl", "per"), partners = "arg", table = "yrp")
+```
+
+### Reporter trade at product level (Year - Reporter - Product Code) 
+
+If we want Chilean trade at product level in 1965:
+```{r yrc1, eval = T}
+ots_create_tidy_data(years = 1965, reporters = "chl", table = "yrc")
+```
+
+If we want Chilean trade at product level in 1965 with respect to product "0101" (Horses, asses, mules and hinnies; live):
+```{r yrc2, eval = T}
+ots_create_tidy_data(years = 1965, reporters = "chl", products = "0101", table = "yrc")
+```
+
+But if we want just products exported by Chile in 1965 that also match the string "horse" at product or group name:
+```{r yrc3, eval = T}
+ots_create_tidy_data(years = 1965, reporters = "chl", products = "horse", table = "yrc")
+```
+
+Another option is to pass more than one year, reporter and/or product:
+```{r yrc4, eval = T}
+ots_create_tidy_data(years = c(1965,1967), reporters = c("chl", "per"), products = "apple", table = "yrc")
+```
+
+Here the `export_rca*` and `import_rca*` fields contain the Revealed Comparative Advantage (RCA) of an exported product with respect to all the products with the same number of digits. The definition of RCA is detailed on [Open Trade Statistics Documentation](https://docs.tradestatistics.io/).
+
+### Reporter trade at aggregated level (Year - Reporter)
+
+If we want Chilean trade at aggregated level in 1965:
+```{r yr, eval = T}
+ots_create_tidy_data(years = 1965, reporters = "chl", table = "yr")
+```
+
+Another option is to pass more than one year and/or reporter:
+```{r yr2, eval = T}
+ots_create_tidy_data(years = c(1965,1967), reporters = c("chl", "arg", "per"), table = "yr")
+```
+
+Here some fields deserve an explanation:
+
+* `eci_4_digits_product_code`: Economic Complexity Index (ECI) which is detailed on [Open Trade Statistics Documentation](https://docs.tradestatistics.io/). This index is built by using just four digits product codes.
+* `eci_rank_4_digits_product_code`: The rank of a country given its ECI (e.g. the highest ECI obtains the #1)
+* `eci_rank_4_digits_product_code_delta_1_year`: How many places a country increased or decreased with respect to last year
+
+### Product trade at aggregated level (Year - Product Code)
+
+If we want all products trade in 1965:
+```{r yc1, eval = T}
+ots_create_tidy_data(years = 1965, table = "yc")
+```
+
+If we want traded values of product "0101" (Horses, asses, mules and hinnies; live) in 1965:
+```{r yc2, eval = T}
+ots_create_tidy_data(years = 1965, products = "0101", table = "yc")
+```
+
+If we want traded values of all products that match the string "horse" at product or group name:
+```{r yc3, eval = T}
+ots_create_tidy_data(years = 1965, products = "horse", table = "yc")
+```
+
+Here some fields deserve an explanation:
+
+* `pci_4_digits_product_code`: Product Complexity Index (PCI) which is detailed on [Open Trade Statistics Documentation](https://docs.tradestatistics.io/). This index is built by using just four digits product codes.
+* `pci_6_digits_product_code`: Similar to the previous field but built by using just six digits product codes.
+* `pci_rank_4_digits_product_code`: The rank of a product given its PCI (e.g. the highest PCI obtains the #1)
+* `pci_rank_4_digits_product_code_delta_1_year`: How many places a country increased or decreased with respect to last year
