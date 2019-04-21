@@ -6,7 +6,7 @@
 \alias{tradestatistics-package}
 \title{tradestatistics: Open Trade Statistics API Wrapper and Utility Program}
 \description{
-Access Open Trade Statistics API from R to download international trade data.
+Access 'Open Trade Statistics' API from R to download international trade data.
 }
 \seealso{
 Useful links:
@@ -21,12 +21,12 @@ Useful links:
 
 Other contributors:
 \itemize{
-  \item Joshua Kunst [contributor]
-  \item Emily Riederer [reviewer]
-  \item Mark Padgham (0000-0003-1017-7574) [reviewer]
-  \item Amanda Dobbyn [reviewer]
-  \item Jorge Cimentada [reviewer]
-  \item  United Nations International Trade Statistics Database [data contributor]
+  \item Joshua Kunst (contributed to different parts of the pre-release code) [contributor]
+  \item Emily Riederer (reviewed the package for rOpenSci, see https://github.com/ropensci/onboarding/issues/274) [reviewer]
+  \item Mark Padgham (reviewed the package for rOpenSci, see https://github.com/ropensci/onboarding/issues/274) [reviewer]
+  \item Amanda Dobbyn (reviewed an archived package that evolved into the current package for rOpenSci, see https://github.com/ropensci/onboarding/issues/217) [reviewer]
+  \item Jorge Cimentada (reviewed an archived package that evolved into the current package for rOpenSci, see https://github.com/ropensci/onboarding/issues/217) [reviewer]
+  \item  UN Comtrade [data contributor]
   \item  Center for International Development at Harvard University [data contributor]
   \item  The Observatory of Economic Complexity [data contributor]
 }
