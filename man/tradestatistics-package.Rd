@@ -11,7 +11,7 @@ Access 'Open Trade Statistics' API from R to download international trade data.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://ropensci.github.io/tradestatistics}
+  \item \url{https://docs.ropensci.org/tradestatistics/}
   \item Report bugs at \url{https://github.com/ropensci/tradestatistics/issues}
 }
 
@@ -27,6 +27,7 @@ Other contributors:
   \item Amanda Dobbyn (reviewed an archived package that evolved into the current package for rOpenSci, see https://github.com/ropensci/onboarding/issues/217) [reviewer]
   \item Jorge Cimentada (reviewed an archived package that evolved into the current package for rOpenSci, see https://github.com/ropensci/onboarding/issues/217) [reviewer]
   \item  UN Comtrade [data contributor]
+  \item  The World Bank [data contributor]
   \item  Center for International Development at Harvard University [data contributor]
   \item  The Observatory of Economic Complexity [data contributor]
 }
