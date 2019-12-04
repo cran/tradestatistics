@@ -3,11 +3,11 @@
 #' performs different API calls to transform and return tidy data.
 #' @param years Year contained within the years specified in
 #' api.tradestatistics.io/year_range (e.g. \code{c(1980,1985)}, \code{c(1980:1981)} or \code{1980}).
-#' Default set to \code{NULL}.
-#' @param reporters ISO code for reporter country (e.g. \code{"chl"}, \code{Chile} or
-#' \code{c("chl", "Peru")}). Default set to \code{NULL}.
-#' @param partners ISO code for partner country (e.g. \code{"chl"}, \code{Chile} or
-#' \code{c("chl", "Peru")}). Default set to \code{NULL}.
+#' Default set to \code{1962}.
+#' @param reporters ISO code for reporter country (e.g. \code{"chl"}, \code{"Chile"} or
+#' \code{c("chl", "Peru")}). Default set to \code{"all"}.
+#' @param partners ISO code for partner country (e.g. \code{"chl"}, \code{"Chile"} or
+#' \code{c("chl", "Peru")}). Default set to \code{"all"}.
 #' @param products HS codes (e.g. \code{"0101"}, \code{"01"} or search matches for \code{"apple"})
 #' to filter products. Default set to \code{"all"}.
 #' @param table Character string to select the table to obtain the data.
@@ -54,9 +54,9 @@
 #' }
 #' @keywords functions
 
-ots_create_tidy_data <- function(years = NULL,
-                                 reporters = NULL,
-                                 partners = NULL,
+ots_create_tidy_data <- function(years = 1962,
+                                 reporters = "all",
+                                 partners = "all",
                                  products = "all",
                                  table = "yrpc",
                                  max_attempts = 5,
@@ -117,13 +117,23 @@ ots_create_tidy_data <- function(years = NULL,
       reporters_no_iso <- purrr::map_chr(
         seq_along(reporters_no_iso),
         function(x) {
-          y <- tradestatistics::ots_country_code(reporters_no_iso[x]) %>%
-            dplyr::select(!!sym("country_iso"))
+          y <- try(
+            tradestatistics::ots_country_code(reporters_no_iso[x]) %>%
+              dplyr::select(!!sym("country_iso")) %>% 
+              purrr::as_vector()
+          )
 
-          if (nrow(y) == 0) {
-            stop("The specified reporter returned no valid ISO code")
-          } else {
-            y <- purrr::as_vector(y)
+          if (class(y) == "try-error") {
+            order <- switch(
+              x,
+              "1" = "st",
+              "2" = "nd",
+              "3" = "rd"
+            )
+            
+            order <- ifelse(is.null(order), "th", order)
+            
+            stop(sprintf("%s%s specified reporter returned no valid ISO code.", x, order))
           }
 
           return(y)
@@ -143,15 +153,25 @@ ots_create_tidy_data <- function(years = NULL,
       partners_no_iso <- purrr::map_chr(
         seq_along(partners_no_iso),
         function(x) {
-          y <- tradestatistics::ots_country_code(partners_no_iso[x]) %>%
-            dplyr::select(!!sym("country_iso"))
+          y <- try(
+            tradestatistics::ots_country_code(partners_no_iso[x]) %>%
+              dplyr::select(!!sym("country_iso")) %>% 
+              purrr::as_vector()
+          )
 
-          if (nrow(y) == 0) {
-            stop("The specified partner returned no valid ISO code")
-          } else {
-            y <- purrr::as_vector(y)
+          if (class(y) == "try-error") {
+            order <- switch(
+              x,
+              "1" = "st",
+              "2" = "nd",
+              "3" = "rd"
+            )
+            
+            order <- ifelse(is.null(order), "th", order)
+            
+            stop(sprintf("%s%s specified partner returned no valid ISO code.", x, order))
           }
-
+          
           return(y)
         }
       )

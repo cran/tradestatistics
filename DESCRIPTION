@@ -1,7 +1,7 @@
 Package: tradestatistics
 Type: Package
 Title: Open Trade Statistics API Wrapper and Utility Program
-Version: 0.2.5
+Version: 0.2.7
 Authors@R: c(
       person(given = "Mauricio",
              family = "Vargas",
@@ -45,11 +45,11 @@ LazyData: TRUE
 Depends: R (>= 3.5.0)
 Imports: rlang, magrittr, dplyr, stringr, crul, purrr, jsonlite
 RoxygenNote: 6.1.1
-Suggests: knitr, rmarkdown, testthat, styler, pkgdown, vcr
+Suggests: knitr, rmarkdown, testthat, styler, pkgdown, vcr, covr
 VignetteBuilder: knitr
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2019-09-19 02:25:44 UTC; pacha
+Packaged: 2019-12-04 22:39:10 UTC; mvargass
 Author: Mauricio Vargas [aut, cre, cph]
     (<https://orcid.org/0000-0003-1017-7574>),
   Joshua Kunst [ctb] (contributed to different parts of the pre-release
@@ -70,4 +70,4 @@ Author: Mauricio Vargas [aut, cre, cph]
   The Observatory of Economic Complexity [dtc]
 Maintainer: Mauricio Vargas <mvargas@dcc.uchile.cl>
 Repository: CRAN
-Date/Publication: 2019-09-19 08:40:02 UTC
+Date/Publication: 2019-12-04 23:00:02 UTC
