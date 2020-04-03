@@ -1,7 +1,7 @@
 Package: tradestatistics
 Type: Package
 Title: Open Trade Statistics API Wrapper and Utility Program
-Version: 0.2.7
+Version: 1.0
 Authors@R: c(
       person(given = "Mauricio",
              family = "Vargas",
@@ -12,6 +12,14 @@ Authors@R: c(
              family = "Kunst",
              role = "ctb",
              comment = "contributed to different parts of the pre-release code"),
+      person(given = "Natalia",
+             family = "de los Santos",
+             role = "ctb",
+             comment = "proposed improvements to default parameters"),
+      person(given = "Elio",
+             family = "Campitelli",
+             role = "ctb",
+             comment = "wrote client-side caching function"),
       person(given = "Emily",
              family = "Riederer",
              role = "rev",
@@ -42,18 +50,20 @@ BugReports: https://github.com/ropensci/tradestatistics/issues
 Description: Access 'Open Trade Statistics' API from R to download international trade data.
 License: GPL-3
 LazyData: TRUE
-Depends: R (>= 3.5.0)
-Imports: rlang, magrittr, dplyr, stringr, crul, purrr, jsonlite
-RoxygenNote: 6.1.1
-Suggests: knitr, rmarkdown, testthat, styler, pkgdown, vcr, covr
+Imports: crul, jsonlite, memoise, data.table, digest
+RoxygenNote: 7.1.0
+Suggests: knitr, rmarkdown, DT, testthat (>= 2.1.0), vcr, covr
 VignetteBuilder: knitr
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2019-12-04 22:39:10 UTC; mvargass
+Packaged: 2020-04-03 18:07:53 UTC; pacha
 Author: Mauricio Vargas [aut, cre, cph]
     (<https://orcid.org/0000-0003-1017-7574>),
   Joshua Kunst [ctb] (contributed to different parts of the pre-release
     code),
+  Natalia de los Santos [ctb] (proposed improvements to default
+    parameters),
+  Elio Campitelli [ctb] (wrote client-side caching function),
   Emily Riederer [rev] (reviewed the package for rOpenSci, see
     https://github.com/ropensci/onboarding/issues/274),
   Mark Padgham [rev] (reviewed the package for rOpenSci, see
@@ -70,4 +80,4 @@ Author: Mauricio Vargas [aut, cre, cph]
   The Observatory of Economic Complexity [dtc]
 Maintainer: Mauricio Vargas <mvargas@dcc.uchile.cl>
 Repository: CRAN
-Date/Publication: 2019-12-04 23:00:02 UTC
+Date/Publication: 2020-04-03 18:40:03 UTC

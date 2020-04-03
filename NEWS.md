@@ -1,3 +1,35 @@
+# Version 0.4.0
+
+Updates
+
+* Includes `yrpc-ga`, `yrpc-sa`, `yrc-ga` and `yr-sa` tables reflecting API updates
+* Simplifies end-user functions a bit (i.e. removes `include_groups` option)
+* Optimizes the code a bit, specially at the joins with tables in the package
+* Fixes codes duplication when both product and group/community match for a search
+* Includes both official and shortened section names
+
+# Version 0.3.1
+
+Updates
+
+* Removes `yrp_short` option reflecting last DB changes
+
+# Version 0.3
+
+Updates
+
+* Much improved coverage to detect almost any possible error
+* Fixes case in inflation adjustment when year = reference year
+
+# Version 0.2.8
+
+Updates
+
+* Adds caching (in memory or on disk) option
+* Lists Daniela de los Santos and Elio Campitelli as new contributors
+* Includes forwards and backwards testing for inflation adjustment
+* Testing for in memory caching
+
 # Version 0.2.7
 
 Updates

@@ -1,85 +1,135 @@
-## ----setup, include = FALSE----------------------------------------------
+## ----setup, include = FALSE---------------------------------------------------
 knitr::opts_chunk$set(
   cache = FALSE,
   collapse = TRUE,
+  message = FALSE,
   comment = "#>"
 )
 
-## ----tables, eval = T----------------------------------------------------
+datatable <- function(x) {
+  DT::datatable(x,
+    extensions = "FixedColumns",
+    options = list(
+      pageLength = 5,
+      dom = 'Bfrtip',
+      scrollX = TRUE,
+      fixedColumns = list(leftColumns = 2, rightColumns = 1)
+    )
+)}
+
+## ----pkgs---------------------------------------------------------------------
 library(tradestatistics)
+library(DT)
 
-ots_tables
+## ----tables, eval = T---------------------------------------------------------
+datatable(ots_tables)
 
-## ----countries, eval = T-------------------------------------------------
-ots_countries
+## ----countries, eval = T------------------------------------------------------
+datatable(ots_countries)
 
-## ----products, eval = T--------------------------------------------------
-ots_products
+## ----products, eval = T-------------------------------------------------------
+datatable(ots_products)
 
-ots_product_shortnames
+## ----products2, eval = T------------------------------------------------------
+datatable(ots_products_shortnames)
 
-ots_communities
+## ----products3, eval = T------------------------------------------------------
+datatable(ots_sections)
 
-## ----inflation, eval = T-------------------------------------------------
-ots_inflation
+## ----products4, eval = T------------------------------------------------------
+datatable(ots_sections_shortnames)
 
-## ----country_code--------------------------------------------------------
+## ----inflation, eval = T------------------------------------------------------
+datatable(ots_inflation)
+
+## ----country_code-------------------------------------------------------------
 # Single match with no replacement
-ots_country_code("Chile")
+datatable(ots_country_code("Chile"))
 
 # Single match with replacement
-ots_country_code("America")
+datatable(ots_country_code("America"))
 
 # Double match with no replacement
-ots_country_code("Germany")
+datatable(ots_country_code("Germany"))
 
-## ----product_code--------------------------------------------------------
-ots_product_code("wine")
+## ----product_code-------------------------------------------------------------
+datatable(ots_product_code(" WiNe "))
 
-## ----yrpc1, eval = T-----------------------------------------------------
-ots_create_tidy_data(years = 1962, reporters = "chl", partners = "arg")
+## ----product_code2------------------------------------------------------------
+datatable(ots_product_code(productname = " ShEEp ", productgroup = " mEaT "))
 
-# the same can be obtained specifying yrpc which is the default table
-# ots_create_tidy_data(years = 1962, reporters = "chl", partners = "arg", table = "yrpc")
+## ----section_code-------------------------------------------------------------
+datatable(ots_product_section(" tExTiLeS "))
 
-## ----yrpc2, eval = T-----------------------------------------------------
+## ----yrpc1, eval = T----------------------------------------------------------
+yrpc <- ots_create_tidy_data(
+  years = 1962,
+  reporters = "chl",
+  partners = "arg",
+  table = "yrpc"
+)
+
+datatable(yrpc)
+
+## ----yrpc2, eval = T----------------------------------------------------------
 # Note that here I'm passing Peru and not per which is the ISO code for Peru
 # The same applies to Brazil
-ots_create_tidy_data(years = c(1962,1963), reporters = c("chl", "Peru", "bol"), partners = c("arg", "Brazil"))
+yrpc2 <- ots_create_tidy_data(
+  years = c(1962,1963),
+  reporters = c("chl", "Peru", "bol"),
+  partners = c("arg", "Brazil"),
+  sections = c("01", "food"),
+  table = "yrpc"
+)
+datatable(yrpc2)
 
-## ----yrpc3, eval = T-----------------------------------------------------
-# Pass a specific HS code
-ots_create_tidy_data(years = c(1962,1963), reporters = c("chl", "Peru", "bol"), partners = c("arg", "bra"), products = "0101")
+## ----yrp3, eval = T-----------------------------------------------------------
+yrp <- ots_create_tidy_data(
+  years = 1962:1963,
+  reporters = c("chl", "per"),
+  partners = "arg",
+  table = "yrp"
+)
 
-# Pass a string that will return all matching descriptions and multiple HS codes
-ots_create_tidy_data(years = c(1962,1963), reporters = c("chl", "Peru", "bol"), partners = c("arg", "bra"), products = c("0101", "apple"))
+datatable(yrp)
 
-## ----yrp1, eval = T------------------------------------------------------
-ots_create_tidy_data(years = 1962, reporters = "chl", partners = "arg", table = "yrp")
+## ----yrc2, eval = T-----------------------------------------------------------
+yrc <- ots_create_tidy_data(
+  years = 1962,
+  reporters = "chl",
+  products = "0101",
+  table = "yrc"
+)
 
-## ----yrp3, eval = T------------------------------------------------------
-ots_create_tidy_data(years = 1962:1963, reporters = c("chl", "per"), partners = "arg", table = "yrp")
+datatable(yrc)
 
-## ----yrc1, eval = T------------------------------------------------------
-ots_create_tidy_data(years = 1962, reporters = "chl", table = "yrc")
+## ----yr2, eval = T------------------------------------------------------------
+yr <- ots_create_tidy_data(
+  years = 1962:1963,
+  reporters = c("chl", "arg", "per"),
+  table = "yr"
+)
 
-## ----yrc2, eval = T------------------------------------------------------
-ots_create_tidy_data(years = 1962, reporters = "chl", products = "0101", table = "yrc")
+datatable(yr)
 
-## ----yr, eval = T--------------------------------------------------------
-ots_create_tidy_data(years = 1962, reporters = "chl", table = "yr")
+## ----yc1, eval = T------------------------------------------------------------
+yc <- ots_create_tidy_data(
+  years = 1962,
+  table = "yc"
+)
 
-## ----yr2, eval = T-------------------------------------------------------
-ots_create_tidy_data(years = 1962:1963, reporters = c("chl", "arg", "per"), table = "yr")
+datatable(yc)
 
-## ----yc1, eval = T-------------------------------------------------------
-ots_create_tidy_data(years = 1962, table = "yc")
+## ----yc2, eval = T------------------------------------------------------------
+yc2 <- ots_create_tidy_data(
+  years = 1962,
+  products = "0101",
+  table = "yc"
+)
 
-## ----yc2, eval = T-------------------------------------------------------
-ots_create_tidy_data(years = 1962, products = "0101", table = "yc")
+datatable(yc2)
 
-## ------------------------------------------------------------------------
-library(magrittr)
-ots_create_tidy_data(years = 1962, reporters = "chl", table = "yr") %>% 
-  ots_inflation_adjustment(reference_year = 1970)
+## -----------------------------------------------------------------------------
+inflation <- ots_inflation_adjustment(yr, reference_year = 1970)
+datatable(inflation)
 

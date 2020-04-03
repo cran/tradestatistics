@@ -4,10 +4,19 @@
 \alias{ots_create_tidy_data}
 \title{Downloads and processes the data from the API to return a human-readable tibble}
 \usage{
-ots_create_tidy_data(years = 1962, reporters = "all",
-  partners = "all", products = "all", table = "yrpc",
-  max_attempts = 5, include_shortnames = FALSE,
-  include_communities = FALSE, use_localhost = FALSE)
+ots_create_tidy_data(
+  years = 2018,
+  reporters = "usa",
+  partners = "all",
+  products = "all",
+  sections = "all",
+  groups = "all",
+  table = "yr",
+  max_attempts = 5,
+  use_cache = FALSE,
+  file = NULL,
+  use_localhost = FALSE
+)
 }
 \arguments{
 \item{years}{Year contained within the years specified in
@@ -20,22 +29,29 @@ Default set to \code{1962}.}
 \item{partners}{ISO code for partner country (e.g. \code{"chl"}, \code{"Chile"} or
 \code{c("chl", "Peru")}). Default set to \code{"all"}.}
 
-\item{products}{HS codes (e.g. \code{"0101"}, \code{"01"} or search matches for \code{"apple"})
+\item{products}{HS product codes (e.g. \code{"0101"}, \code{"01"} or search
+matches for \code{"apple"})
 to filter products. Default set to \code{"all"}.}
 
+\item{sections}{unofficial product sections (e.g. \code{"01"} or search
+matches for \code{"animals"}) to filter sections Default set to
+\code{"all"}.}
+
+\item{groups}{HS product groups (e.g. \code{"01"} or search matches for 
+\code{"animals"}) to filter groups. Default set to \code{"all"}.}
+
 \item{table}{Character string to select the table to obtain the data.
-Default set to \code{yrpc} (Year - Reporter - Partner - Product Code).
+Default set to \code{yr} (Year - Reporter).
 Run \code{ots_tables} in case of doubt.}
 
 \item{max_attempts}{How many times to try to download data in case the
 API or the internet connection fails when obtaining data. Default set
 to \code{5}.}
 
-\item{include_shortnames}{Whether to include or not to include unofficial shortened product names.
-Default set to \code{FALSE}.}
+\item{use_cache}{Logical to save and load from cache. If \code{TRUE}, the results will be cached in memory
+if \code{file} is \code{NULL} or on disk if `file` is not \code{NULL}. Default set to \code{FALSE}.}
 
-\item{include_communities}{Whether to include or not to include product communities.
-Default set to \code{FALSE}.}
+\item{file}{Optional character with the full file path to save the data. Default set to \code{NULL}.}
 
 \item{use_localhost}{Logical to determine if the base URL shall be localhost instead
 of api.tradestatistics.io. Default set to \code{FALSE}.}
@@ -47,12 +63,12 @@ such as exports growth w/r to last year) between a \code{reporter}
 and \code{partner} country.
 }
 \description{
-This function accesses \code{api.tradestatistics.io} and
+Accesses \code{api.tradestatistics.io} and
 performs different API calls to transform and return tidy data.
 }
 \examples{
 \dontrun{
-# The next example can take more than 5 seconds to compute,
+# The next examples can take more than 5 seconds to compute,
 # so these are just shown without evaluation according to CRAN rules
 
 # Run `ots_countries` to display the full table of countries
