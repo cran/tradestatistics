@@ -1,8 +1,8 @@
-b7b5dd2c98cf3f83311e0aa874867ada *DESCRIPTION
+bf64d2da136a1e4b384e88210f6f1131 *DESCRIPTION
 c03a6cd1f6cfb487534ff5cca4be7597 *NAMESPACE
 1177d19055c52716b51fe960ee789d83 *NEWS.md
 d9b2de1a4336a80ab507fbc1d7b283b9 *R/ots_cache.R
-52e10c2035ccc10f2f7988741f92e125 *R/ots_create_tidy_data.R
+6f020497a3268724d5419631ecf9af46 *R/ots_create_tidy_data.R
 2640e107c3f3ce57a6de27d07f02e389 *R/ots_inflation_adjustment.R
 b0aa27b7040cbdc776f0ed343c28eaa2 *R/ots_read_from_api.R
 def154d5b3d3e6430825980b159d360b *R/ots_strings_processing.R
@@ -20,7 +20,7 @@ cb14227b701ce8788e2dc1ad2df03ed3 *data/ots_sections_shortnames.rda
 18f6d675fe7f0d0f188546f29041ed5b *data/ots_tables.rda
 7e2ba1d329fc40c7c8821da63742642e *inst/doc/basic-usage.R
 bc86abe6b7eab05173bc698c170a6654 *inst/doc/basic-usage.Rmd
-53a4e943c01c46a71356863f716855c6 *inst/doc/basic-usage.html
+336040c519a515f173b5cc6bd80012cf *inst/doc/basic-usage.html
 457c38c3116caa46dfdeac16c3e4beb7 *inst/references.bib
 b8320b4d2de428f45cc8e119e7dbf67d *man/ots_cache.Rd
 47481af2494b7f9c6989b2fabb9573b1 *man/ots_countries.Rd
@@ -45,6 +45,7 @@ f633d27f5a19035abfbd51a897a958d9 *man/ots_sections_shortnames.Rd
 db835b2e4c6a7cf6924a32de519713f5 *tests/fixtures/vcr_cassettes/chl_all_1964.yml
 bc97282a181b547a30b415ef8f425475 *tests/fixtures/vcr_cassettes/chl_arg_1964.yml
 bca0eaa9af8739480b2a01132e50fdcf *tests/fixtures/vcr_cassettes/chl_arg_1964_kriptonite.yml
+31af986ba7836c67c307892aca26fb29 *tests/fixtures/vcr_cassettes/chl_arg_1964_yr.yml
 a5e1a3a53d138886c5f63b67637c67d4 *tests/fixtures/vcr_cassettes/chl_arg_1964_yr_apple.yml
 4d51a361fad10cc63e4397acfecd6f9b *tests/fixtures/vcr_cassettes/chl_arg_1964_yrpc_animal.yml
 5e5ab8db3617b02df3146d196b5167cf *tests/fixtures/vcr_cassettes/chl_arg_1964_yrpc_apple.yml
@@ -52,7 +53,7 @@ c4ea2db72be225bd37e09794d8ce40f9 *tests/fixtures/vcr_cassettes/chl_prk_1964.yml
 6f0d66d620db2d481bc9a4e4349c10e7 *tests/testthat.R
 9b1c461abf5c5354a25129ff483c5e07 *tests/testthat/helper-tradestatistics.R
 178bdce253865bbb2f8c7e3f726225e5 *tests/testthat/test-ots_country_code.R
-562ecbb7d2e16fa4a013149bd2f5fa4f *tests/testthat/test-ots_create_tidy_data.R
+71443e529fdb7a126364b83580aee7c7 *tests/testthat/test-ots_create_tidy_data.R
 2bd7119e7df615756018b24e113e963e *tests/testthat/test-ots_inflation_adjustment.R
 9e1f8f10cf34f0fccc520261f8f3f8ee *tests/testthat/test-ots_product_code.R
 d81905b2378dd2b0808de2d98131226b *tests/testthat/test-ots_strings_processing.R
