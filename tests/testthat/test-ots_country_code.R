@@ -1,4 +1,4 @@
-context("testthat.R")
+context("country code")
 
 test_that("ots_country_code works properly for single matching", {
   test_country_1 <- ots_country_code("Chile")
@@ -26,7 +26,6 @@ test_that("ots_country_code works properly for multiple matching", {
 
 test_that("ots_country_code returns an error when no countryname is specified", {
   expect_error(ots_country_code(countryname = ""))
-  
   expect_error(ots_country_code(countryname = NULL))
 })
 

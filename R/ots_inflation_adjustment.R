@@ -13,9 +13,9 @@
 #' # The next example can take more than 5 seconds to compute,
 #' # so this is shown without evaluation according to CRAN rules
 #'
-#' # Convert dollars of 1980 to dollars of 2010
-#' d <- ots_create_tidy_data(years = 1980, reporters = "chl", partners = "chn")
-#' ots_inflation_adjustment(trade_data = d, reference_year = 2010)
+#' # Convert dollars of 2010 to dollars of 2000
+#' d <- ots_create_tidy_data(years = 2010, reporters = "chl", partners = "chn")
+#' ots_inflation_adjustment(trade_data = d, reference_year = 2000)
 #' }
 #' @keywords functions
 ots_inflation_adjustment <- function(trade_data = NULL, reference_year = NULL) {
@@ -48,37 +48,28 @@ ots_inflation_adjustment <- function(trade_data = NULL, reference_year = NULL) {
   d1 <- lapply(
     years,
     function(year) {
-      if (year <= reference_year) {
+      if (year < reference_year) {
         tradestatistics::ots_inflation[to <= reference_year & to > year,
           .(conversion_factor = last(cumprod(conversion_factor)))][,
           `:=`(year = ..year, conversion_year = ..reference_year)][,
           .(year, conversion_year, conversion_factor)]
-      } else {
+      } else if (year > reference_year) {
         tradestatistics::ots_inflation[from >= reference_year & from < year,
           .(conversion_factor = 1/last(cumprod(conversion_factor)))][,
           `:=`(year = ..year, conversion_year = ..reference_year)][,
           .(year, conversion_year, conversion_factor)]
+      } else if (year == reference_year) {
+        data.frame(
+          year = year, conversion_year = year, conversion_factor = 1
+        )
       }
     }
   )
   d1 <- rbindlist(d1)
-  d1 <- d1[, `:=`(conversion_factor = ifelse(year == conversion_year, 1, conversion_factor))]
-  
+
   d2 <- trade_data[d1, on = .(year), allow.cartesian = TRUE][,
-    `:=`(export_value_usd = export_value_usd * conversion_factor,
-         import_value_usd = import_value_usd * conversion_factor)]
-  
-  if (any("top_export_trade_value_usd" %in% names(d2))) {
-    d2 <- d2[,
-      `:=`(top_export_trade_value_usd = top_export_trade_value_usd * conversion_factor,
-           top_import_trade_value_usd = top_import_trade_value_usd * conversion_factor)]
-  }
-  
-  if (any("top_exporter_trade_value_usd" %in% names(d2))) {
-    d2 <- d2[,
-      `:=`(top_exporter_trade_value_usd = top_exporter_trade_value_usd * conversion_factor,
-           top_importer_trade_value_usd = top_importer_trade_value_usd * conversion_factor)]
-  }
+    `:=`(trade_value_usd_exp = trade_value_usd_exp * conversion_factor,
+         trade_value_usd_imp = trade_value_usd_imp * conversion_factor)]
 
   return(d2)
 }

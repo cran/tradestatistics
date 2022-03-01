@@ -5,12 +5,10 @@
 \title{Downloads and processes the data from the API to return a human-readable tibble}
 \usage{
 ots_create_tidy_data(
-  years = 2018,
-  reporters = "usa",
+  years = 2019,
+  reporters = "all",
   partners = "all",
-  products = "all",
-  sections = "all",
-  groups = "all",
+  commodities = "all",
   table = "yr",
   max_attempts = 5,
   use_cache = FALSE,
@@ -20,8 +18,8 @@ ots_create_tidy_data(
 }
 \arguments{
 \item{years}{Year contained within the years specified in
-api.tradestatistics.io/year_range (e.g. \code{c(1980,1985)}, \code{c(1980:1981)} or \code{1980}).
-Default set to \code{1962}.}
+api.tradestatistics.io/year_range (e.g. \code{c(2002,2004)}, \code{c(2002:2004)} or \code{2002}).
+Default set to \code{2019}.}
 
 \item{reporters}{ISO code for reporter country (e.g. \code{"chl"}, \code{"Chile"} or
 \code{c("chl", "Peru")}). Default set to \code{"all"}.}
@@ -29,16 +27,9 @@ Default set to \code{1962}.}
 \item{partners}{ISO code for partner country (e.g. \code{"chl"}, \code{"Chile"} or
 \code{c("chl", "Peru")}). Default set to \code{"all"}.}
 
-\item{products}{HS product codes (e.g. \code{"0101"}, \code{"01"} or search
+\item{commodities}{HS commodity codes (e.g. \code{"0101"}, \code{"01"} or search
 matches for \code{"apple"})
-to filter products. Default set to \code{"all"}.}
-
-\item{sections}{unofficial product sections (e.g. \code{"01"} or search
-matches for \code{"animals"}) to filter sections Default set to
-\code{"all"}.}
-
-\item{groups}{HS product groups (e.g. \code{"01"} or search matches for 
-\code{"animals"}) to filter groups. Default set to \code{"all"}.}
+to filter commodities. Default set to \code{"all"}.}
 
 \item{table}{Character string to select the table to obtain the data.
 Default set to \code{yr} (Year - Reporter).
@@ -72,17 +63,17 @@ performs different API calls to transform and return tidy data.
 # so these are just shown without evaluation according to CRAN rules
 
 # Run `ots_countries` to display the full table of countries
-# Run `ots_products` to display the full table of products
+# Run `ots_commodities` to display the full table of commodities
 
-# What does Chile export to China? (1980)
-ots_create_tidy_data(years = 1980, reporters = "chl", partners = "chn")
+# What does Chile export to China? (2002)
+ots_create_tidy_data(years = 2002, reporters = "chl", partners = "chn")
 
-# What can we say about Horses export in Chile and the World? (1980)
-ots_create_tidy_data(years = 1980, products = "0101", table = "yc")
-ots_create_tidy_data(years = 1980, reporters = "chl", products = "0101", table = "yrc")
+# What can we say about Horses export in Chile and the World? (2002)
+ots_create_tidy_data(years = 2002, commodities = "010110", table = "yc")
+ots_create_tidy_data(years = 2002, reporters = "chl", commodities = "010110", table = "yrc")
 
-# What can we say about the different types of apples exported by Chile? (1980)
-ots_create_tidy_data(years = 1980, reporters = "chl", products = "apple", table = "yrc")
+# What can we say about the different types of apples exported by Chile? (2002)
+ots_create_tidy_data(years = 2002, reporters = "chl", commodities = "apple", table = "yrc")
 }
 }
 \keyword{functions}

@@ -1,3 +1,53 @@
+# version 3.0.2
+
+Updates
+* Allows to obtain tables in Parquet format from the API, giving a speed-up
+ of ~50% for the final user.
+* Uses tibble instead of DT to produce lighter vignettes
+  
+# version 3.0.1
+
+Updates
+* Adds section colors data for visualization, this is taken from the palette
+  used in shiny.tradestatistics.io
+
+# Version 3.0
+
+Updates
+* Removes all references to tables using communities or short names 
+ (both unofficial), reflecting changes in the API
+* The functionality remains the same, but now the end user functions don't
+ add a 21-colors palette to the data (i.e. see the data section)
+
+Data
+
+* Switches from HS92  to HS12 to reflect product changes with less aggregation
+* Drops any data from Harvard (communities and short product names) as these
+ depend on using HS92 4 digits, therefore the color palettes were removed as
+ these depended on the communities table
+* The inflation data was trimmed to a window since the year 2000
+* The commodities data now contains information for +5000 products instead of
+ +1200 as the aggregation level changed in the API
+* Adds RTAs and MFN tariffs for gravity modelling
+
+# Version 2.0
+
+Updates 
+
+* Uses ISO codes as is (affects Aruba, Roumania, Timor-Leste, Antarctica, 
+ Saint Barthelemy, Curacao, Sint Maarten and South Sudan)
+  
+# Version 1.0
+
+Updates
+
+* Reflects API changes with less aggregated data
+* Follows UN COMTRADE notation (i.e. commodity instead of product)
+* Does not impute data before hand, which is better for most of gravity models use cases
+* Provides the data exactly as in the API, returning commodity level data to allow users to do their own aggregation
+* Does not drop reference year with inflation adjustment (https://github.com/ropensci/tradestatistics/issues/38)
+* Takes max and min available years from the API instead of hardcoded values (https://github.com/ropensci/tradestatistics/pull/39)
+
 # Version 0.4.0
 
 Updates
