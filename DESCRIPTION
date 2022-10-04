@@ -1,7 +1,7 @@
 Package: tradestatistics
 Type: Package
 Title: Open Trade Statistics API Wrapper and Utility Program
-Version: 3.0.2
+Version: 4.4.0
 Authors@R: c(
       person(given = "Mauricio",
              family = "Vargas",
@@ -20,14 +20,10 @@ Authors@R: c(
              family = "Mendelsohn",
              role = "ctb",
              comment = "updated the functions to take available years from the API instead of hardcoded values"),
-      person(given = "Natalia",
+      person(given = "Daniela",
              family = "de los Santos",
              role = "ctb",
              comment = "proposed improvements to default parameters"),
-      person(given = "Elio",
-             family = "Campitelli",
-             role = "ctb",
-             comment = "wrote parts of the client-side caching function"),
       person(given = "Emily",
              family = "Riederer",
              role = "rev",
@@ -54,15 +50,14 @@ BugReports: https://github.com/ropensci/tradestatistics/issues/
 Description: Access 'Open Trade Statistics' API from R to download international trade data.
 License: Apache License (>= 2)
 LazyData: TRUE
-Imports: crul, jsonlite, memoise, data.table, digest
-RoxygenNote: 7.1.2
-Suggests: knitr, rmarkdown, tibble, testthat (>= 2.1.0), vcr, covr,
-        arrow
+Imports: crul, arrow, memoise, data.table, digest
+RoxygenNote: 7.2.1
+Suggests: knitr, rmarkdown, tibble, testthat (>= 2.1.0), vcr, covr
 VignetteBuilder: knitr
 Encoding: UTF-8
 Depends: R (>= 2.10)
 NeedsCompilation: no
-Packaged: 2022-02-24 17:23:28 UTC; pacha
+Packaged: 2022-10-04 21:20:21 UTC; pacha
 Author: Mauricio Vargas [aut, cre, cph]
     (<https://orcid.org/0000-0003-1017-7574>),
   Joshua Kunst [ctb] (contributed to different parts of the pre-release
@@ -70,9 +65,8 @@ Author: Mauricio Vargas [aut, cre, cph]
   Alexey Kravchenko [ctb] (reviewed 2021 version of the API),
   Emma Mendelsohn [ctb] (updated the functions to take available years
     from the API instead of hardcoded values),
-  Natalia de los Santos [ctb] (proposed improvements to default
+  Daniela de los Santos [ctb] (proposed improvements to default
     parameters),
-  Elio Campitelli [ctb] (wrote parts of the client-side caching function),
   Emily Riederer [rev] (reviewed the package for rOpenSci, see
     https://github.com/ropensci/onboarding/issues/274),
   Mark Padgham [rev] (reviewed the package for rOpenSci, see
@@ -87,4 +81,4 @@ Author: Mauricio Vargas [aut, cre, cph]
   The World Bank [dtc]
 Maintainer: Mauricio Vargas <mavargas11@uc.cl>
 Repository: CRAN
-Date/Publication: 2022-03-01 18:20:02 UTC
+Date/Publication: 2022-10-04 21:50:02 UTC

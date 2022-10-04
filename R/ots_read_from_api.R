@@ -1,103 +1,39 @@
 #' Reads data from the API (internal function)
 #' @description Accesses \code{api.tradestatistics.io} and
-#' performs different API calls to return \code{data.frames} by reading \code{JSON} data
-#' @param year Year contained within the years specified in
-#' api.tradestatistics.io/year_range (e.g. \code{1980}).
-#' Default set to \code{NULL}.
-#' @param reporter_iso ISO code for reporter country (e.g. \code{"chl"}). Default set to \code{"all"}.
-#' @param partner_iso ISO code for partner country (e.g. \code{"chl"}). Default set to \code{"all"}.
-#' @param commodity_code HS code (e.g. \code{0101} or \code{01}) to filter commodities.
-#' Default set to \code{"all"}.
-#' @param table Character string to select the table to obtain the data. Default set to \code{yr}
-#' (Year - Reporter).
-#' @param max_attempts Number of attempts to retry in case of data retrieving failure.
-#' Default set to \code{5}.
-#' @param use_localhost Logical to determine if the base URL shall be localhost instead
-#' of api.tradestatistics.io. Default set to \code{FALSE}.
-#' @importFrom jsonlite fromJSON
+#' performs different API calls to return \code{data.frames} by reading 
+#' \code{JSON} data. The parameters here are passed from 
+#' \code{ots_create_tidy_data}.
 #' @importFrom crul HttpClient
-#' @examples
-#' \dontrun{
-#' # The next examples can take more than 5 seconds to compute,
-#' # so these are shown without evaluation according to CRAN rules
-#'
-#' # Run `countries` to display the full table of countries
-#'
-#' # What does Chile export to China? (1980)
-#' ots_read_from_api(year = 1980, reporter_iso = "chl", partner_iso = "chn")
-#'
-#' # What can we say about chilean Horses export? (1980)
-#' ots_read_from_api(year = 1980, commodity_code = "0101", table = "yc")
-#' ots_read_from_api(year = 1980, reporter_iso = "chl", commodity_code = "0101", table = "yrc")
-#' ots_read_from_api(
-#'   year = 1980, reporter_iso = "chl", partner_iso = "arg", commodity_code = "0101",
-#'   table = "yrpc"
-#' )
-#' }
 #' @keywords internal
 ots_read_from_api <- function(year = NULL,
                               reporter_iso = NULL,
                               partner_iso = NULL,
                               commodity_code = "all",
+                              section_code = "all",
                               table = "yr",
-                              max_attempts = 5,
-                              use_localhost = FALSE) {
+                              max_attempts = 5) {
   stopifnot(max_attempts > 0)
 
+  if (any(table %in% c("countries", "commodities", "commodities_short", "sections", "sections_colors", "tables", "distances"))) {
+    message("The requested table is included within the package.")
+    return(TRUE)
+  }
+  
   url <- switch(
     table,
-    "countries" = "countries",
     "reporters" = sprintf("reporters?y=%s", year),
     "partners" = sprintf("partners?y=%s", year),
-    "commodities" = "commodities",
-    "yrpc" = sprintf(
-      "yrpc?y=%s&r=%s&p=%s&c=%s",
-      year, reporter_iso, partner_iso, commodity_code
-    ),
-    "yrpc-parquet" = sprintf(
-      "yrpc-parquet?y=%s&r=%s&p=%s&c=%s",
-      year, reporter_iso, partner_iso, commodity_code
-    ),
-    "yrpc-imputed" = sprintf(
-      "yrpc-imputed?y=%s&r=%s&p=%s&c=%s",
-      year, reporter_iso, partner_iso, commodity_code
-    ),
-    "yrpc-imputed-parquet" = sprintf(
-      "yrpc-imputed-parquet?y=%s&r=%s&p=%s&c=%s",
-      year, reporter_iso, partner_iso, commodity_code
-    ),
+    "yrpc" = sprintf("yrpc?y=%s&r=%s&p=%s&c=%s", year, reporter_iso, partner_iso, commodity_code),
     "yrp" = sprintf("yrp?y=%s&r=%s&p=%s", year, reporter_iso, partner_iso),
-    "yrp-imputed" = sprintf("yrp-imputed?y=%s&r=%s&p=%s", year, reporter_iso, partner_iso),
-    "yrc" = sprintf(
-      "yrc?y=%s&r=%s&c=%s",
-      year, reporter_iso, commodity_code
-    ),
-    "yrc-imputed" = sprintf(
-      "yrc-imputed?y=%s&r=%s&c=%s",
-      year, reporter_iso, commodity_code
-    ),
+    "yrc" = sprintf("yrc?y=%s&r=%s&c=%s", year, reporter_iso, commodity_code),
     "yr" = sprintf("yr?y=%s&r=%s", year, reporter_iso),
-    "yr-imputed" = sprintf("yr-imputed?y=%s&r=%s", year, reporter_iso),
-    "yr-groups" = sprintf("yr-groups?y=%s&r=%s", year, reporter_iso),
-    "yr-groups-imputed" = sprintf("yr-groups-imputed?y=%s&r=%s", year, reporter_iso),
-    "yr-sections" = sprintf("yr-sections?y=%s&r=%s", year, reporter_iso),
-    "yr-sections-imputed" = sprintf("yr-sections-imputed?y=%s&r=%s", year, reporter_iso),
     "yc" = sprintf("yc?y=%s&c=%s", year, commodity_code),
-    "yc-imputed" = sprintf("yc-imputed?y=%s&c=%s", year, commodity_code),
-    "years" = "years",
     "rtas" = sprintf("rtas?y=%s", year),
-    "tariffs" = sprintf(
-      "tariffs?y=%s&r=%s&c=%s",
-      year, reporter_iso, commodity_code
-    )
+    "tariffs" = sprintf("tariffs?y=%s&r=%s&p=%s&c=%s", year, reporter_iso, partner_iso, commodity_code)
   )
 
-  if (use_localhost == TRUE) {
-    base_url <- "http://localhost:8080/"
-  } else {
-    base_url <- "https://api.tradestatistics.io/"
-  }
-
+  base_url <- "https://api.tradestatistics.io/"
+  
   resp <- HttpClient$new(url = base_url)
   resp <- resp$get(url)
 
@@ -111,20 +47,12 @@ ots_read_from_api <- function(year = NULL,
     
     message(sprintf("Downloading data for the combination %s...", combination))
 
-    if (!grepl("parquet", url)) {
-      data <- try(
-        fromJSON(resp$parse(encoding = "UTF-8"))
-      )
-    } else {
-      if (!requireNamespace("arrow", quietly = TRUE)) {
-        stop("`arrow` must be installed for reading parquet data to work")
-      }
-      
-      data <- try(
-        arrow::read_parquet(resp$content)
-      )
+    if (!requireNamespace("arrow", quietly = TRUE)) {
+      stop("`arrow` must be installed for reading parquet data to work")
     }
-    
+      
+    data <- try(read_parquet(resp$content))
+
     if (!is.data.frame(data)) {
       stop("It wasn't possible to obtain data. Provided this function tests your internet connection\nyou misspelled a reporter, partner or table, or there was a server problem. Please check and try again.")
     }
@@ -134,11 +62,9 @@ ots_read_from_api <- function(year = NULL,
     # when attempts run out, stop with an error
     stop("Cannot connect to the API. Either the server is down or there is a connection problem.")
   } else {
-    # otherwise, sleep a second and try again
-    Sys.sleep(1)
+    # otherwise, sleep five seconds and try again
+    Sys.sleep(5)
     ots_read_from_api(year, reporter_iso, partner_iso, commodity_code, table, 
-                      max_attempts = max_attempts - 1,
-                      use_localhost
-    )
+                      max_attempts = max_attempts - 1)
   }
 }

@@ -9,9 +9,9 @@ ots_create_tidy_data_memoised(
   reporters = "usa",
   partners = "all",
   commodities = "all",
+  sections = "all",
   table = "yr",
-  max_attempts = 5,
-  use_localhost = FALSE
+  max_attempts = 5
 )
 }
 \description{

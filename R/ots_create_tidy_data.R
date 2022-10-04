@@ -11,6 +11,7 @@
 #' @param commodities HS commodity codes (e.g. \code{"0101"}, \code{"01"} or search
 #' matches for \code{"apple"})
 #' to filter commodities. Default set to \code{"all"}.
+#' @param sections HS section codes (e.g. \code{"01"}). Default set to \code{"all"}.
 #' @param table Character string to select the table to obtain the data.
 #' Default set to \code{yr} (Year - Reporter).
 #' Run \code{ots_tables} in case of doubt.
@@ -20,14 +21,12 @@
 #' @param use_cache Logical to save and load from cache. If \code{TRUE}, the results will be cached in memory
 #' if \code{file} is \code{NULL} or on disk if `file` is not \code{NULL}. Default set to \code{FALSE}.
 #' @param file Optional character with the full file path to save the data. Default set to \code{NULL}.
-#' @param use_localhost Logical to determine if the base URL shall be localhost instead
-#' of api.tradestatistics.io. Default set to \code{FALSE}.
 #' @return A tibble that describes bilateral trade metrics (imports,
 #' exports, trade balance and relevant metrics
 #' such as exports growth w/r to last year) between a \code{reporter}
 #' and \code{partner} country.
 #' @importFrom data.table `:=` rbindlist setnames
-#' @importFrom jsonlite fromJSON
+#' @importFrom arrow read_parquet
 #' @importFrom crul HttpClient
 #' @export
 #' @examples
@@ -53,11 +52,11 @@ ots_create_tidy_data <- function(years = 2019,
                                  reporters = "all",
                                  partners = "all",
                                  commodities = "all",
+                                 sections = "all",
                                  table = "yr",
                                  max_attempts = 5,
                                  use_cache = FALSE,
-                                 file = NULL,
-                                 use_localhost = FALSE) {
+                                 file = NULL) {
   if (!is.logical(use_cache)) {
     stop("use_cache must be logical.")
   }
@@ -73,22 +72,23 @@ ots_create_tidy_data <- function(years = 2019,
     reporters = reporters,
     partners = partners,
     commodities = commodities,
+    sections = sections,
     table = table,
-    max_attempts = max_attempts,
-    use_localhost = use_localhost
+    max_attempts = max_attempts
   )
 }
 
 #' Downloads and processes the data from the API to return a human-readable tibble (unmemoised, internal)
 #' @description A separation of \code{ots_create_tidy_data()} for making caching optional.
+#' @importFrom utils read.csv
 #' @keywords internal
 ots_create_tidy_data_unmemoised <- function(years = 2018,
                                             reporters = "usa",
                                             partners = "all",
                                             commodities = "all",
+                                            sections = "all",
                                             table = "yr",
-                                            max_attempts = 5,
-                                            use_localhost = FALSE) {
+                                            max_attempts = 5) {
   # Check tables ----
   if (!table %in% tradestatistics::ots_tables$table) {
     stop("The requested table does not exist. Please check the spelling or explore the 'ots_table' table provided within this package.")
@@ -100,12 +100,9 @@ ots_create_tidy_data_unmemoised <- function(years = 2018,
     value = T
   )
 
-  if (use_localhost) {
-    year_range <- unlist(fromJSON("http://localhost:8080/year_range"))
-  } else {
-    year_range <- unlist(fromJSON("https://api.tradestatistics.io/year_range"))
-  }
-  
+  year_range <- try(read.csv("https://api.tradestatistics.io/year_range"))
+  year_range <- try(as.numeric(year_range$year))
+
   if (all(years %in% min(year_range):max(year_range)) != TRUE &
     table %in% year_depending_queries) {
     stop("Provided that the table you requested contains a 'year' field, please verify that you are requesting data contained within the years from api.tradestatistics.io/year_range.")
@@ -117,7 +114,7 @@ ots_create_tidy_data_unmemoised <- function(years = 2018,
     value = T
   )
   
-  partner_depending_queries <- grep("^yrp",
+  partner_depending_queries <- grep("^yrp|^tariffs",
     tradestatistics::ots_tables$table,
     value = T
   )
@@ -181,7 +178,7 @@ ots_create_tidy_data_unmemoised <- function(years = 2018,
   }
 
   # Check commodity codes ----
-  commodities_depending_queries <- grep("c$|c-imputed$|^tariffs",
+  commodities_depending_queries <- grep("c$|^tariffs",
     tradestatistics::ots_tables$table,
     value = T
   )
@@ -226,13 +223,42 @@ ots_create_tidy_data_unmemoised <- function(years = 2018,
     stop("The requested commodities do not exist. Please check ots_commodities.")
   }
   
+  # Check section codes -----------------------------------------------------
+  sections <- sort(as.character(sections))
+  
+  if (!all(sections %in% c(tradestatistics::ots_sections$section_code, "all") == TRUE) &
+      table %in% commodities_depending_queries) {
+    for (i in seq_along(sections)) {
+      if (sections[i] != "all") {
+        sections[i] <- as.integer(substr(sections, 1, 3))
+      }
+      if (nchar(sections[i]) != 2 & sections[i] != "999") {
+        sections[i] <- paste0("0", sections[i])
+      }
+    }
+    
+    for (i in seq_along(sections)) {
+      sections[i] <- if (!sections[i] %in% tradestatistics::ots_sections$section_code) {
+        NA
+      } else {
+        sections[i]
+      }
+    }
+    
+    sections <- sections[!is.na(sections)]
+    if(length(sections) == 0) {
+      sections <- NA
+    }
+  }
+  
+  if (!all(sections %in% c(tradestatistics::ots_sections$section_code, "all") == TRUE) &
+    table %in% commodities_depending_queries) {
+    stop("The requested sections do not exist. Please check ots_sections.")
+  }
+  
   # Check optional parameters ----
   if (!is.numeric(max_attempts) | max_attempts <= 0) {
     stop("max_attempts must be a positive integer.")
-  }
-
-  if (!is.logical(use_localhost)) {
-    stop("use_localhost must be logical.")
   }
 
   # Read from API ----
@@ -256,6 +282,7 @@ ots_create_tidy_data_unmemoised <- function(years = 2018,
     reporter = reporters,
     partner = partners,
     commodity = commodities,
+    section = "all",
     stringsAsFactors = FALSE
   )
 
@@ -269,7 +296,7 @@ ots_create_tidy_data_unmemoised <- function(years = 2018,
         reporter_iso = condensed_parameters$reporter[x],
         partner_iso = condensed_parameters$partner[x],
         commodity_code = condensed_parameters$commodity[x],
-        use_localhost = use_localhost
+        section_code = condensed_parameters$section[x]
       )
     }
   )
@@ -285,73 +312,40 @@ ots_create_tidy_data_unmemoised <- function(years = 2018,
 
   # include countries data
   if (table %in% reporter_depending_queries) {
-    if (table %in% partner_depending_queries) {
-      data <- merge(data, tradestatistics::ots_countries[, .(country_iso, country_fullname_english)],
-                    all.x = TRUE, all.y = FALSE,
-                    by.x = "reporter_iso", by.y = "country_iso",
-                    allow.cartesian = TRUE)
-      data <- setnames(data, "country_fullname_english", "reporter_fullname_english")
-    } else {
-      data <- merge(data, tradestatistics::ots_countries[, .(country_iso, country_fullname_english)],
-                    all.x = TRUE, all.y = FALSE,
-                    by.x = "reporter_iso", by.y = "country_iso",
-                    allow.cartesian = TRUE)
-      data <- setnames(data, "country_fullname_english", "reporter_fullname_english")
-    }
+    data <- merge(data, tradestatistics::ots_countries[, .(country_iso, country_name_english)],
+                  all.x = TRUE, all.y = FALSE,
+                  by.x = "reporter_iso", by.y = "country_iso",
+                  allow.cartesian = TRUE)
+    data <- setnames(data, "country_name_english", "reporter_name")
   }
 
   if (table %in% partner_depending_queries) {
-    data <- merge(data, tradestatistics::ots_countries[, .(country_iso, country_fullname_english)],
+    data <- merge(data, tradestatistics::ots_countries[, .(country_iso, country_name_english)],
                   all.x = TRUE, all.y = FALSE,
                   by.x = "partner_iso", by.y = "country_iso",
                   allow.cartesian = TRUE)
-    data <- setnames(data, "country_fullname_english", "partner_fullname_english")
+    data <- setnames(data, "country_name_english", "partner_name")
   }
   
   # include commodities data
   if (table %in% commodities_depending_queries) {
     data <- merge(data, tradestatistics::ots_commodities,
                   all.x = TRUE, all.y = FALSE,
-                  by.x = "commodity_code", by.y = "commodity_code",
+                  by.x = c("commodity_code", "section_code"), by.y = c("commodity_code", "section_code"),
                   allow.cartesian = TRUE)
-  }
-  
-  # special YR cases
-  if (grepl("yr-groups", table)) {
-    ots_groups <- unique(tradestatistics::ots_commodities[, c("group_code", "group_fullname_english")])
-    ots_groups <- ots_groups[!is.na(ots_groups$group_code), ]
     
-    if (any(colnames(data) %in% "group_code")) {
-      data <- merge(data, ots_groups,
-                    all.x = TRUE, all.y = FALSE,
-                    by.x = "group_code", by.y = "group_code",
-                    allow.cartesian = TRUE)
-    }
-  }
-  
-  if (grepl("yr-sections", table)) {
-    ots_sections <- unique(tradestatistics::ots_commodities[, c("section_code", "section_fullname_english")])
-    ots_sections <- ots_sections[!is.na(ots_sections$section_code), ]
-    
-    if (any(colnames(data) %in% "section_code")) {
-      data <- merge(data, ots_sections,
-                    all.x = TRUE, all.y = FALSE,
-                    by.x = "section_code", by.y = "section_code",
-                    allow.cartesian = TRUE)
-      
-      data$section_fullname_english[is.na(data$section_fullname_english)] <- "Unspecified"
-    }
+    data <- setnames(data, c("commodity_fullname_english", "section_fullname_english"), 
+                     c("commodity_name", "section_name"))
   }
   
   columns_order <- c("year",
                      grep("^reporter_", colnames(data), value = TRUE),
                      grep("^partner_", colnames(data), value = TRUE),
                      grep("^commodity_", colnames(data), value = TRUE),
-                     grep("^group_", colnames(data), value = TRUE),
                      grep("^section_", colnames(data), value = TRUE),
                      grep("^trade_", colnames(data), value = TRUE),
                      grep("^country|^rta", colnames(data), value = TRUE),
-                     grep("rate|average|line", colnames(data), value = TRUE)
+                     grep("tariff|source", colnames(data), value = TRUE)
   )
 
   data <- data[, ..columns_order]
