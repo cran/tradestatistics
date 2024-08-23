@@ -33,7 +33,7 @@ as_tibble(ots_country_code("America"))
 as_tibble(ots_country_code("Germany"))
 
 ## ----commodity_code2----------------------------------------------------------
-as_tibble(ots_commodity_code(commodity = " ShEEp ", section = " mEaT "))
+as_tibble(ots_commodity_code(commodity = " Horse ", section = " ANIMAL "))
 
 ## ----yrpc1, eval = F----------------------------------------------------------
 #  yrpc <- ots_create_tidy_data(
