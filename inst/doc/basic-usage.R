@@ -36,63 +36,63 @@ as_tibble(ots_country_code("Germany"))
 as_tibble(ots_commodity_code(commodity = " Horse ", section = " ANIMAL "))
 
 ## ----yrpc1, eval = F----------------------------------------------------------
-#  yrpc <- ots_create_tidy_data(
-#    years = 2019,
-#    reporters = "chl",
-#    partners = "arg",
-#    table = "yrpc"
-#  )
-#  
-#  as_tibble(yrpc)
+# yrpc <- ots_create_tidy_data(
+#   years = 2019,
+#   reporters = "chl",
+#   partners = "arg",
+#   table = "yrpc"
+# )
+# 
+# as_tibble(yrpc)
 
 ## ----yrpc3, eval = F----------------------------------------------------------
-#  # Note that here I'm passing Peru and not per which is the ISO code for Peru
-#  # The same applies to Brazil
-#  yrpc2 <- ots_create_tidy_data(
-#    years = 2018:2019,
-#    reporters = c("chl", "Peru", "bol"),
-#    partners = c("arg", "Brazil"),
-#    commodities = c("01", "food"),
-#    table = "yrpc"
-#  )
+# # Note that here I'm passing Peru and not per which is the ISO code for Peru
+# # The same applies to Brazil
+# yrpc2 <- ots_create_tidy_data(
+#   years = 2018:2019,
+#   reporters = c("chl", "Peru", "bol"),
+#   partners = c("arg", "Brazil"),
+#   commodities = c("01", "food"),
+#   table = "yrpc"
+# )
 
 ## ----yrp3, eval = F-----------------------------------------------------------
-#  yrp <- ots_create_tidy_data(
-#    years = 2018:2019,
-#    reporters = c("chl", "per"),
-#    partners = "arg",
-#    table = "yrp"
-#  )
+# yrp <- ots_create_tidy_data(
+#   years = 2018:2019,
+#   reporters = c("chl", "per"),
+#   partners = "arg",
+#   table = "yrp"
+# )
 
 ## ----yrc2, eval = F-----------------------------------------------------------
-#  yrc <- ots_create_tidy_data(
-#    years = 2019,
-#    reporters = "chl",
-#    commodities = "010121",
-#    table = "yrc"
-#  )
+# yrc <- ots_create_tidy_data(
+#   years = 2019,
+#   reporters = "chl",
+#   commodities = "010121",
+#   table = "yrc"
+# )
 
 ## ----yr2, eval = F------------------------------------------------------------
-#  yr <- ots_create_tidy_data(
-#    years = 2018:2019,
-#    reporters = c("chl", "arg", "per"),
-#    table = "yr"
-#  )
+# yr <- ots_create_tidy_data(
+#   years = 2018:2019,
+#   reporters = c("chl", "arg", "per"),
+#   table = "yr"
+# )
 
 ## ----yc1, eval = F------------------------------------------------------------
-#  yc <- ots_create_tidy_data(
-#    years = 2019,
-#    table = "yc"
-#  )
+# yc <- ots_create_tidy_data(
+#   years = 2019,
+#   table = "yc"
+# )
 
 ## ----yc2, eval = F------------------------------------------------------------
-#  yc2 <- ots_create_tidy_data(
-#    years = 2019,
-#    commodities = "010121",
-#    table = "yc"
-#  )
+# yc2 <- ots_create_tidy_data(
+#   years = 2019,
+#   commodities = "010121",
+#   table = "yc"
+# )
 
 ## ----inflation2, eval=FALSE---------------------------------------------------
-#  inflation <- ots_gdp_deflator_adjustment(yr, reference_year = 2000)
-#  as_tibble(inflation)
+# inflation <- ots_gdp_deflator_adjustment(yr, reference_year = 2000)
+# as_tibble(inflation)
 
