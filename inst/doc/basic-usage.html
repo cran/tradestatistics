@@ -12,7 +12,7 @@
 
 <meta name="author" content="Mauricio Vargas S." />
 
-<meta name="date" content="2025-09-22" />
+<meta name="date" content="2026-07-07" />
 
 <title>Basic usage</title>
 
@@ -341,7 +341,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Basic usage</h1>
 <h4 class="author">Mauricio Vargas S.</h4>
-<h4 class="date">2025-09-22</h4>
+<h4 class="date">2026-07-07</h4>
 
 
 
@@ -350,10 +350,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>This vignette explains the functions within this package. The idea is
 to show how this package simplifies obtaining data from
 (api.tradestatistics.io)[<a href="https://api.tradestatistics.io" class="uri">https://api.tradestatistics.io</a>].</p>
-<p>To improve the presentation of the tables I shall use
-<code>tibble</code> besides <code>tradestatistics</code>.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(tradestatistics)</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(tibble)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(tradestatistics)</span></code></pre></div>
 </div>
 <div id="package-data" class="section level1">
 <h1>Package data</h1>
@@ -361,35 +358,120 @@ to show how this package simplifies obtaining data from
 <h2>Available tables</h2>
 <p>Provided that this package obtains data from an API, it is useful to
 know which tables can be accessed:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">as_tibble</span>(ots_tables)</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 11 × 3</span></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&gt;    table             description                                          source</span></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;             &lt;chr&gt;                                                &lt;chr&gt; </span></span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt;  1 commodities       Commodities metadata (HS codes, 6 digits long)       Based…</span></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt;  2 commodities_short Commodities metadata (HS codes, 4 digits long)       Based…</span></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt;  3 countries         Countries metadata                                   Based…</span></span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt;  4 gdp_deflator      GDP deflator (2020 = 100)                            Based…</span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt;  5 sections          Sections metadata (HS codes)                         Based…</span></span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt;  6 year_range        Minimum and maximum years with available data        Based…</span></span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt;  7 yc                Commodity trade at aggregated level (Year and Commo… Based…</span></span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt;  8 yr                Reporter trade at aggregated level (Year and Report… Based…</span></span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt;  9 yrc               Reporter trade at commodity level (Year, Reporter a… Based…</span></span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt; 10 yrp               Reporter-Partner trade at aggregated level (Year, R… Based…</span></span>
-<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt; 11 yrpc              Reporter-Partner trade at commodity level (Year, Re… Based…</span></span></code></pre></div>
-<p>You might notice the tables have a pattern. The letters indicate the
-presence of columns that account for the level of detail in the
-data:</p>
-<ul>
-<li><code>y</code>: <em>y</em>ear column.</li>
-<li><code>r</code>: <em>r</em>eporter column</li>
-<li><code>p</code>: <em>p</em>artner column</li>
-<li><code>c</code>: <em>c</em>ommodity column</li>
-</ul>
-<p>The most aggregated table is <code>yr</code> which basically says how
-many dollars each country exports and imports for a given year.</p>
-<p>The less aggregated table is <code>yrpc</code> which says how many
-dollars of each of the 1,242 commodities from the Harmonized System each
-country exports to other countries and imports from other countries.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>ots_tables</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt;                 table</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&gt;                &lt;char&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt;  1:         countries</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt;  2: countries_colours</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt;  3:         importers</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt;  4:         exporters</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt;  5:           sectors</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt;  6:   sectors_colours</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt;  7:        industries</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt;  8:             years</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt;  9:             itpde</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt; 10:         itpde_imp</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt; 11:         itpde_exp</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt; 12:     itpde_imp_exp</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt; 13:     itpde_imp_sec</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt; 14:     itpde_imp_ind</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt; 15:     itpde_exp_sec</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co">#&gt; 16:     itpde_exp_ind</span></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co">#&gt; 17:         itpde_sec</span></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a><span class="co">#&gt; 18:         itpde_ind</span></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a><span class="co">#&gt; 19: itpde_imp_exp_sec</span></span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="co">#&gt; 20:             itpds</span></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a><span class="co">#&gt; 21:         itpds_imp</span></span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a><span class="co">#&gt; 22:         itpds_exp</span></span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a><span class="co">#&gt; 23:     itpds_imp_exp</span></span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co">#&gt; 24:     itpds_imp_sec</span></span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a><span class="co">#&gt; 25:     itpds_imp_ind</span></span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co">#&gt; 26:     itpds_exp_sec</span></span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a><span class="co">#&gt; 27:     itpds_exp_ind</span></span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a><span class="co">#&gt; 28:         itpds_sec</span></span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a><span class="co">#&gt; 29:         itpds_ind</span></span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a><span class="co">#&gt; 30: itpds_imp_exp_sec</span></span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a><span class="co">#&gt;                 table</span></span>
+<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a><span class="co">#&gt;                &lt;char&gt;</span></span>
+<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a><span class="co">#&gt;                                                                                               description</span></span>
+<span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a><span class="co">#&gt;                                                                                                    &lt;char&gt;</span></span>
+<span id="cb2-38"><a href="#cb2-38" tabindex="-1"></a><span class="co">#&gt;  1:                                                                                             Countries</span></span>
+<span id="cb2-39"><a href="#cb2-39" tabindex="-1"></a><span class="co">#&gt;  2:                                                    Contries coloured by continent (for visualization)</span></span>
+<span id="cb2-40"><a href="#cb2-40" tabindex="-1"></a><span class="co">#&gt;  3:                                                                                    Importers per year</span></span>
+<span id="cb2-41"><a href="#cb2-41" tabindex="-1"></a><span class="co">#&gt;  4:                                                                                    Exporters per year</span></span>
+<span id="cb2-42"><a href="#cb2-42" tabindex="-1"></a><span class="co">#&gt;  5:                                                                                         Broad sectors</span></span>
+<span id="cb2-43"><a href="#cb2-43" tabindex="-1"></a><span class="co">#&gt;  6:                                                                             Broad sectors with colour</span></span>
+<span id="cb2-44"><a href="#cb2-44" tabindex="-1"></a><span class="co">#&gt;  7:                                                                                            Industries</span></span>
+<span id="cb2-45"><a href="#cb2-45" tabindex="-1"></a><span class="co">#&gt;  8:                                                                                                 Years</span></span>
+<span id="cb2-46"><a href="#cb2-46" tabindex="-1"></a><span class="co">#&gt;  9:                                                     International Trade and Production for Estimation</span></span>
+<span id="cb2-47"><a href="#cb2-47" tabindex="-1"></a><span class="co">#&gt; 10:                    International Trade and Production for Estimation, aggregated by year and importer</span></span>
+<span id="cb2-48"><a href="#cb2-48" tabindex="-1"></a><span class="co">#&gt; 11:                    International Trade and Production for Estimation, aggregated by year and exporter</span></span>
+<span id="cb2-49"><a href="#cb2-49" tabindex="-1"></a><span class="co">#&gt; 12:         International Trade and Production for Estimation, aggregated by year, importer, and exporter</span></span>
+<span id="cb2-50"><a href="#cb2-50" tabindex="-1"></a><span class="co">#&gt; 13:           International Trade and Production for Estimation, aggregated by year, importer, and sector</span></span>
+<span id="cb2-51"><a href="#cb2-51" tabindex="-1"></a><span class="co">#&gt; 14:         International Trade and Production for Estimation, aggregated by year, importer, and industry</span></span>
+<span id="cb2-52"><a href="#cb2-52" tabindex="-1"></a><span class="co">#&gt; 15:           International Trade and Production for Estimation, aggregated by year, exporter, and sector</span></span>
+<span id="cb2-53"><a href="#cb2-53" tabindex="-1"></a><span class="co">#&gt; 16:         International Trade and Production for Estimation, aggregated by year, exporter, and industry</span></span>
+<span id="cb2-54"><a href="#cb2-54" tabindex="-1"></a><span class="co">#&gt; 17:                      International Trade and Production for Estimation, aggregated by year and sector</span></span>
+<span id="cb2-55"><a href="#cb2-55" tabindex="-1"></a><span class="co">#&gt; 18:                    International Trade and Production for Estimation, aggregated by year and industry</span></span>
+<span id="cb2-56"><a href="#cb2-56" tabindex="-1"></a><span class="co">#&gt; 19: International Trade and Production for Estimation, aggregated by year, importer, exporter, and sector</span></span>
+<span id="cb2-57"><a href="#cb2-57" tabindex="-1"></a><span class="co">#&gt; 20:                                                     International Trade and Production for Simulation</span></span>
+<span id="cb2-58"><a href="#cb2-58" tabindex="-1"></a><span class="co">#&gt; 21:                    International Trade and Production for Simulation, aggregated by year and importer</span></span>
+<span id="cb2-59"><a href="#cb2-59" tabindex="-1"></a><span class="co">#&gt; 22:                    International Trade and Production for Simulation, aggregated by year and exporter</span></span>
+<span id="cb2-60"><a href="#cb2-60" tabindex="-1"></a><span class="co">#&gt; 23:         International Trade and Production for Simulation, aggregated by year, importer, and exporter</span></span>
+<span id="cb2-61"><a href="#cb2-61" tabindex="-1"></a><span class="co">#&gt; 24:           International Trade and Production for Simulation, aggregated by year, importer, and sector</span></span>
+<span id="cb2-62"><a href="#cb2-62" tabindex="-1"></a><span class="co">#&gt; 25:         International Trade and Production for Simulation, aggregated by year, importer, and industry</span></span>
+<span id="cb2-63"><a href="#cb2-63" tabindex="-1"></a><span class="co">#&gt; 26:           International Trade and Production for Simulation, aggregated by year, exporter, and sector</span></span>
+<span id="cb2-64"><a href="#cb2-64" tabindex="-1"></a><span class="co">#&gt; 27:         International Trade and Production for Simulation, aggregated by year, exporter, and industry</span></span>
+<span id="cb2-65"><a href="#cb2-65" tabindex="-1"></a><span class="co">#&gt; 28:                      International Trade and Production for Simulation, aggregated by year and sector</span></span>
+<span id="cb2-66"><a href="#cb2-66" tabindex="-1"></a><span class="co">#&gt; 29:                    International Trade and Production for Simulation, aggregated by year and industry</span></span>
+<span id="cb2-67"><a href="#cb2-67" tabindex="-1"></a><span class="co">#&gt; 30: International Trade and Production for Simulation, aggregated by year, importer, exporter, and sector</span></span>
+<span id="cb2-68"><a href="#cb2-68" tabindex="-1"></a><span class="co">#&gt;                                                                                               description</span></span>
+<span id="cb2-69"><a href="#cb2-69" tabindex="-1"></a><span class="co">#&gt;                                                                                                    &lt;char&gt;</span></span>
+<span id="cb2-70"><a href="#cb2-70" tabindex="-1"></a><span class="co">#&gt;                 source</span></span>
+<span id="cb2-71"><a href="#cb2-71" tabindex="-1"></a><span class="co">#&gt;                 &lt;char&gt;</span></span>
+<span id="cb2-72"><a href="#cb2-72" tabindex="-1"></a><span class="co">#&gt;  1: Derived from USITC</span></span>
+<span id="cb2-73"><a href="#cb2-73" tabindex="-1"></a><span class="co">#&gt;  2: Derived from USITC</span></span>
+<span id="cb2-74"><a href="#cb2-74" tabindex="-1"></a><span class="co">#&gt;  3: Derived from USITC</span></span>
+<span id="cb2-75"><a href="#cb2-75" tabindex="-1"></a><span class="co">#&gt;  4: Derived from USITC</span></span>
+<span id="cb2-76"><a href="#cb2-76" tabindex="-1"></a><span class="co">#&gt;  5: Derived from USITC</span></span>
+<span id="cb2-77"><a href="#cb2-77" tabindex="-1"></a><span class="co">#&gt;  6: Derived from USITC</span></span>
+<span id="cb2-78"><a href="#cb2-78" tabindex="-1"></a><span class="co">#&gt;  7: Derived from USITC</span></span>
+<span id="cb2-79"><a href="#cb2-79" tabindex="-1"></a><span class="co">#&gt;  8: Derived from USITC</span></span>
+<span id="cb2-80"><a href="#cb2-80" tabindex="-1"></a><span class="co">#&gt;  9:              USITC</span></span>
+<span id="cb2-81"><a href="#cb2-81" tabindex="-1"></a><span class="co">#&gt; 10:              USITC</span></span>
+<span id="cb2-82"><a href="#cb2-82" tabindex="-1"></a><span class="co">#&gt; 11:              USITC</span></span>
+<span id="cb2-83"><a href="#cb2-83" tabindex="-1"></a><span class="co">#&gt; 12:              USITC</span></span>
+<span id="cb2-84"><a href="#cb2-84" tabindex="-1"></a><span class="co">#&gt; 13:              USITC</span></span>
+<span id="cb2-85"><a href="#cb2-85" tabindex="-1"></a><span class="co">#&gt; 14:              USITC</span></span>
+<span id="cb2-86"><a href="#cb2-86" tabindex="-1"></a><span class="co">#&gt; 15:              USITC</span></span>
+<span id="cb2-87"><a href="#cb2-87" tabindex="-1"></a><span class="co">#&gt; 16:              USITC</span></span>
+<span id="cb2-88"><a href="#cb2-88" tabindex="-1"></a><span class="co">#&gt; 17:              USITC</span></span>
+<span id="cb2-89"><a href="#cb2-89" tabindex="-1"></a><span class="co">#&gt; 18:              USITC</span></span>
+<span id="cb2-90"><a href="#cb2-90" tabindex="-1"></a><span class="co">#&gt; 19:              USITC</span></span>
+<span id="cb2-91"><a href="#cb2-91" tabindex="-1"></a><span class="co">#&gt; 20:              USITC</span></span>
+<span id="cb2-92"><a href="#cb2-92" tabindex="-1"></a><span class="co">#&gt; 21:              USITC</span></span>
+<span id="cb2-93"><a href="#cb2-93" tabindex="-1"></a><span class="co">#&gt; 22:              USITC</span></span>
+<span id="cb2-94"><a href="#cb2-94" tabindex="-1"></a><span class="co">#&gt; 23:              USITC</span></span>
+<span id="cb2-95"><a href="#cb2-95" tabindex="-1"></a><span class="co">#&gt; 24:              USITC</span></span>
+<span id="cb2-96"><a href="#cb2-96" tabindex="-1"></a><span class="co">#&gt; 25:              USITC</span></span>
+<span id="cb2-97"><a href="#cb2-97" tabindex="-1"></a><span class="co">#&gt; 26:              USITC</span></span>
+<span id="cb2-98"><a href="#cb2-98" tabindex="-1"></a><span class="co">#&gt; 27:              USITC</span></span>
+<span id="cb2-99"><a href="#cb2-99" tabindex="-1"></a><span class="co">#&gt; 28:              USITC</span></span>
+<span id="cb2-100"><a href="#cb2-100" tabindex="-1"></a><span class="co">#&gt; 29:              USITC</span></span>
+<span id="cb2-101"><a href="#cb2-101" tabindex="-1"></a><span class="co">#&gt; 30:              USITC</span></span>
+<span id="cb2-102"><a href="#cb2-102" tabindex="-1"></a><span class="co">#&gt;                 source</span></span>
+<span id="cb2-103"><a href="#cb2-103" tabindex="-1"></a><span class="co">#&gt;                 &lt;char&gt;</span></span></code></pre></div>
+<p>The ITPD-E table means “International Trade and Production Database
+for Estimation” and does not contain imputed values.</p>
+<p>The ITPD-S table means “International Trade and Production Database
+for Simulation” and contains imputed values using the gravity model of
+trade.</p>
+<p>The most aggregated tables are
+<code>itpde_imp</code>/<code>itpds_imp</code> (for imports, or with
+<code>_exp</code> for exporter) which contains how many dollars each
+country imports and exports in a year.</p>
+<p>The less aggregated tables are <code>itpde</code>/<code>itpds</code>
+which detail bilateral trade at industry level in a year.</p>
 <p>For the complete detail you can check <a href="https://tradestatistics.io">tradestatistics.io</a>.</p>
 </div>
 <div id="country-codes" class="section level2">
@@ -400,229 +482,140 @@ to match strings (i.e. “United States” or “America”) to valid ISO codes
 (i.e. “USA”).</p>
 <p>Just as a reference, the table with all valid ISO codes can be
 accessed by running this:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">as_tibble</span>(ots_countries)</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 263 × 5</span></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt;    country_iso country_name          continent_id continent_name continent_color</span></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;       &lt;chr&gt;                        &lt;int&gt; &lt;chr&gt;          &lt;chr&gt;          </span></span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt;  1 DZA         Algeria                          1 Africa         #74c0e2        </span></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt;  2 AGO         Angola                           1 Africa         #74c0e2        </span></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt;  3 BEN         Benin                            1 Africa         #74c0e2        </span></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt;  4 BWA         Botswana                         1 Africa         #74c0e2        </span></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt;  5 IOT         Br. Indian Ocean Ter…            1 Africa         #74c0e2        </span></span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt;  6 BFA         Burkina Faso                     1 Africa         #74c0e2        </span></span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt;  7 BDI         Burundi                          1 Africa         #74c0e2        </span></span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt;  8 CPV         Cabo Verde                       1 Africa         #74c0e2        </span></span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt;  9 CMR         Cameroon                         1 Africa         #74c0e2        </span></span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; 10 CAF         Central African Rep.             1 Africa         #74c0e2        </span></span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; # ℹ 253 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>ots_countries</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt;        iso3 dynamic_code                     country continent  colour</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt;      &lt;char&gt;       &lt;char&gt;                      &lt;char&gt;    &lt;char&gt;  &lt;char&gt;</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt;   1:    AGO          AGO                      Angola    Africa #d1a1bc</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt;   2:    BDI          BDI                     Burundi    Africa #d1a1bc</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt;   3:    BEN          BEN                       Benin    Africa #d1a1bc</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt;   4:    BFA          BFA                Burkina Faso    Africa #d1a1bc</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt;   5:    BWA          BWA                    Botswana    Africa #d1a1bc</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt;  ---                                                                  </span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; 303:    UMI          UMI U.S. Minor Outlying Islands   Oceania #a17cb0</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; 304:    VUT          VUT                     Vanuatu   Oceania #a17cb0</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; 305:    WAK          WAK                 Wake Island   Oceania #a17cb0</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; 306:    WLF          WLF   Wallis and Futuna Islands   Oceania #a17cb0</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; 307:    WSM          WSM                       Samoa   Oceania #a17cb0</span></span></code></pre></div>
 </div>
-<div id="commodity-codes" class="section level2">
-<h2>Commodity codes</h2>
-<p>The Package Functions section explains that you don’t need to
-memorize all HS codes. The functions within this package are designed to
-match strings (i.e. “apple”) to valid HS codes (i.e. “0808”).</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">as_tibble</span>(ots_commodities)</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6,898 × 8</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt;    commodity_code commodity_code_short commodity_name  chapter_code chapter_name</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;          &lt;chr&gt;                &lt;chr&gt;           &lt;chr&gt;        &lt;chr&gt;       </span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt;  1 010121         0101                 Horses; live, … 01           Animals; li…</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt;  2 010129         0101                 Horses; live, … 01           Animals; li…</span></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt;  3 010130         0101                 Asses; live     01           Animals; li…</span></span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt;  4 010190         0101                 Mules and hinn… 01           Animals; li…</span></span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt;  5 010221         0102                 Cattle; live, … 01           Animals; li…</span></span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt;  6 010229         0102                 Cattle; live, … 01           Animals; li…</span></span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt;  7 010231         0102                 Buffalo; live,… 01           Animals; li…</span></span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt;  8 010239         0102                 Buffalo; live,… 01           Animals; li…</span></span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt;  9 010290         0102                 Bovine animals… 01           Animals; li…</span></span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; 10 010310         0103                 Swine; live, p… 01           Animals; li…</span></span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; # ℹ 6,888 more rows</span></span>
-<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; # ℹ 3 more variables: section_code &lt;chr&gt;, section_name &lt;chr&gt;,</span></span>
-<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; #   section_color &lt;chr&gt;</span></span></code></pre></div>
-</div>
-<div id="inflation-data" class="section level2">
-<h2>Inflation data</h2>
-<p>This table is provided to be used with
-<code>ots_gdp_deflator_adjustment()</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">as_tibble</span>(ots_gdp_deflator)</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 7,070 × 4</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt;    year_from year_to country_iso gdp_deflator</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt;        &lt;int&gt;   &lt;int&gt; &lt;chr&gt;              &lt;dbl&gt;</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt;  1      1988    1989 ABW                 1.04</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt;  2      1989    1990 ABW                 1.06</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt;  3      1990    1991 ABW                 1.06</span></span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt;  4      1991    1992 ABW                 1.04</span></span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt;  5      1992    1993 ABW                 1.05</span></span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt;  6      1993    1994 ABW                 1.06</span></span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt;  7      1994    1995 ABW                 1.03</span></span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt;  8      1995    1996 ABW                 1.03</span></span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt;  9      1996    1997 ABW                 1.04</span></span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; 10      1997    1998 ABW                 1.07</span></span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt; # ℹ 7,060 more rows</span></span></code></pre></div>
+<div id="sectorindustry-codes" class="section level2">
+<h2>Sector/industry codes</h2>
+<p>The functions within this package are designed to match strings
+(i.e. “agriculture”) to sector/industry codes.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>ots_sectors</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; Key: &lt;broad_sector_id&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt;         broad_sector broad_sector_id  colour</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt;               &lt;char&gt;           &lt;int&gt;  &lt;char&gt;</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; 1:       Agriculture               1 #74c0e2</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; 2:     Manufacturing               2 #406662</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; 3: Mining and Energy               3 #549e95</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; 4:          Services               4 #8abdb6</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>ots_industries</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt;                                industry_descr industry_id</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt;                                        &lt;char&gt;       &lt;int&gt;</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt;   1:                                    Wheat           1</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt;   2:                               Rice (raw)           2</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt;   3:                                     Corn           3</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt;   4:                            Other cereals           4</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt;   5:                          Cereal products           5</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt;  ---                                                     </span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; 166:                   166 Education services         166</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; 167: 167 Government goods and services n.i.e.         167</span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; 168:               168 Services not allocated         168</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt; 169:               169 Trade-related services         169</span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#&gt; 170:              170 Other personal services         170</span></span></code></pre></div>
 </div>
 </div>
 <div id="package-functions" class="section level1">
 <h1>Package functions</h1>
 <div id="country-code" class="section level2">
 <h2>Country code</h2>
-<p>The end user can use this function to find an ISO code by providing a
-country name. This works by implementing partial search.</p>
+<p>The end user can use this function to find a dynamic ISO-3 code by
+providing a country name. This works by implementing partial search.</p>
 <p>Basic examples:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Single match with no replacement</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">as_tibble</span>(<span class="fu">ots_country_code</span>(<span class="st">&quot;Chile&quot;</span>))</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 5</span></span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt;   country_iso country_name continent_id continent_name continent_color</span></span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;       &lt;chr&gt;               &lt;int&gt; &lt;chr&gt;          &lt;chr&gt;          </span></span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; 1 CHL         Chile                   2 Americas       #406662</span></span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co"># Single match with replacement</span></span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="fu">as_tibble</span>(<span class="fu">ots_country_code</span>(<span class="st">&quot;America&quot;</span>))</span>
-<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; # A tibble: 0 × 5</span></span>
-<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; # ℹ 5 variables: country_iso &lt;chr&gt;, country_name &lt;chr&gt;, continent_id &lt;int&gt;,</span></span>
-<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; #   continent_name &lt;chr&gt;, continent_color &lt;chr&gt;</span></span>
-<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a></span>
-<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co"># Double match with no replacement</span></span>
-<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="fu">as_tibble</span>(<span class="fu">ots_country_code</span>(<span class="st">&quot;Germany&quot;</span>))</span>
-<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 5</span></span>
-<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt;   country_iso country_name           continent_id continent_name continent_color</span></span>
-<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;       &lt;chr&gt;                         &lt;int&gt; &lt;chr&gt;          &lt;chr&gt;          </span></span>
-<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#&gt; 1 DDR         Dem. Rep. of Germany …            4 Europe         #8abdb6        </span></span>
-<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#&gt; 2 DEU         Germany                           4 Europe         #8abdb6</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Single match with no replacement</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">ots_country_code</span>(<span class="st">&quot;Chile&quot;</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt;      iso3 dynamic_code country continent  colour</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt;    &lt;char&gt;       &lt;char&gt;  &lt;char&gt;    &lt;char&gt;  &lt;char&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; 1:    CHL          CHL   Chile  Americas #a1aafb</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co"># Single match with replacement</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="fu">ots_country_code</span>(<span class="st">&quot;America&quot;</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt;      iso3 dynamic_code        country continent  colour</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt;    &lt;char&gt;       &lt;char&gt;         &lt;char&gt;    &lt;char&gt;  &lt;char&gt;</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; 1:    ASM          ASM American Samoa   Oceania #a17cb0</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co"># Double match with no replacement</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="fu">ots_country_code</span>(<span class="st">&quot;Germany&quot;</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt;      iso3 dynamic_code      country continent  colour</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt;    &lt;char&gt;       &lt;char&gt;       &lt;char&gt;    &lt;char&gt;  &lt;char&gt;</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt; 1:    DEU          DEU      Germany    Europe #ede788</span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt; 2:    DEU        DEU.X West Germany    Europe #ede788</span></span></code></pre></div>
 <p>The function <code>ots_country_code()</code> is used by
 <code>ots_create_tidy_data()</code> in a way that you can pass
 parameters like
-<code>ots_create_tidy_data(... reporters = &quot;Chile&quot; ...)</code> and it
-will automatically replace your input for a valid ISO in case there is a
-match. This will be covered in detail in the Trade Data section.</p>
+<code>ots_create_tidy_data(... importers = &quot;Chile&quot; ...)</code> and it
+will automatically replace your input for a valid code in case there is
+a match. This will be covered in detail in the Trade Data section.</p>
 </div>
-<div id="commodity-code" class="section level2">
-<h2>Commodity code</h2>
+<div id="sectorindustry-code" class="section level2">
+<h2>Sector/industry code</h2>
 <p>The end user can find a code or a set of codes by looking for
 keywords for commodities or groups. The function
 <code>ots_commodity_code()</code> allows to search from the official
 commodities and groups in the Harmonized system:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">as_tibble</span>(<span class="fu">ots_commodity_code</span>(<span class="at">commodity =</span> <span class="st">&quot; Horse &quot;</span>, <span class="at">section =</span> <span class="st">&quot; ANIMAL &quot;</span>))</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 13 × 6</span></span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt;    commodity_code commodity_name          chapter_code chapter_name section_code</span></span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;          &lt;chr&gt;                   &lt;chr&gt;        &lt;chr&gt;        &lt;chr&gt;       </span></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt;  1 010121         Horses; live, pure-bre… 01           Animals; li… 01          </span></span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt;  2 010129         Horses; live, other th… 01           Animals; li… 01          </span></span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt;  3 020500         Meat; of horses, asses… 02           Meat and ed… 01          </span></span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt;  4 020680         Offal, edible; of shee… 02           Meat and ed… 01          </span></span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt;  5 020690         Offal, edible; of shee… 02           Meat and ed… 01          </span></span>
-<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt;  6 030245         Fish; fresh or chilled… 03           Fish and cr… 01          </span></span>
-<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt;  7 030355         Fish; frozen, jack and… 03           Fish and cr… 01          </span></span>
-<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt;  8 030554         Dried herrings, anchov… 03           Fish and cr… 01          </span></span>
-<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt;  9 050290         Animal products; badge… 05           Animal orig… 01          </span></span>
-<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt; 10 010110         Horses, asses, mules a… 01           Animals; li… 01          </span></span>
-<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt; 11 050300         Animal products; horse… 05           Animal orig… 01          </span></span>
-<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt; 12 010111         Horses; live, pure-bre… 01           Animals; li… 01          </span></span>
-<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="co">#&gt; 13 010119         Horses; live, other th… 01           Animals; li… 01          </span></span>
-<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="co">#&gt; # ℹ 1 more variable: section_name &lt;chr&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">ots_sector_code</span>(<span class="st">&quot; AgriCulture &quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; Key: &lt;broad_sector_id&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt;    broad_sector broad_sector_id  colour</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt;          &lt;char&gt;           &lt;int&gt;  &lt;char&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; 1:  Agriculture               1 #74c0e2</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="fu">ots_industry_code</span>(<span class="st">&quot;  CeReaLS&quot;</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt;    industry_descr industry_id</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt;            &lt;char&gt;       &lt;int&gt;</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; 1:  Other cereals           4</span></span></code></pre></div>
 </div>
 <div id="trade-data" class="section level2">
 <h2>Trade data</h2>
 <p>This function downloads data for a single year and needs (at least)
 some filter parameters according to the query type.</p>
 <p>Here we cover aggregated tables to describe the usage.</p>
-<div id="bilateral-trade-at-commodity-level-year---reporter---partner---commodity-code" class="section level3">
-<h3>Bilateral trade at commodity level (Year - Reporter - Partner -
-Commodity Code)</h3>
+<div id="bilateral-trade-aggregated" class="section level3">
+<h3>Bilateral trade (aggregated)</h3>
 <p>If we want Chile-Argentina bilateral trade at community level in
 2019:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>yrpc <span class="ot">&lt;-</span> <span class="fu">ots_create_tidy_data</span>(</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="at">years =</span> <span class="dv">2019</span>,</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">reporters =</span> <span class="st">&quot;chl&quot;</span>,</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">partners =</span> <span class="st">&quot;arg&quot;</span>,</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="at">table =</span> <span class="st">&quot;yrpc&quot;</span></span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>)</span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a></span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="fu">as_tibble</span>(yrpc)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">ots_create_tidy_data</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="at">years =</span> <span class="dv">2019</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">importers =</span> <span class="st">&quot;chl&quot;</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">exporters =</span> <span class="st">&quot;arg&quot;</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="at">table =</span> <span class="st">&quot;itpde_imp_exp&quot;</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>)</span></code></pre></div>
 <p>We can pass two years or more, several reporters/partners, and filter
 by commodities with exact codes or code matching based on keywords:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Note that here I&#39;m passing Peru and not per which is the ISO code for Peru</span></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co"># The same applies to Brazil</span></span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>yrpc2 <span class="ot">&lt;-</span> <span class="fu">ots_create_tidy_data</span>(</span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="at">years =</span> <span class="dv">2018</span><span class="sc">:</span><span class="dv">2019</span>,</span>
-<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="at">reporters =</span> <span class="fu">c</span>(<span class="st">&quot;chl&quot;</span>, <span class="st">&quot;Peru&quot;</span>, <span class="st">&quot;bol&quot;</span>),</span>
-<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="at">partners =</span> <span class="fu">c</span>(<span class="st">&quot;arg&quot;</span>, <span class="st">&quot;Brazil&quot;</span>),</span>
-<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  <span class="at">commodities =</span> <span class="fu">c</span>(<span class="st">&quot;01&quot;</span>, <span class="st">&quot;food&quot;</span>),</span>
-<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  <span class="at">table =</span> <span class="st">&quot;yrpc&quot;</span></span>
-<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>)</span></code></pre></div>
-<p>The <code>yrpc</code> table returns some fields that deserve an
-explanation which can be seen at <a href="https://tradestatistics.io">tradestatistics.io</a>. This example
-is interesting because “01” return a set of commodities (all commodities
-starting with 01, which is the commodity group “Animals; live”), but
-“food” return all commodities with a matching description (“1601”,
-“1806”, “1904”, etc.). In addition, not all the requested commodities
-are exported from each reporter to each partner, therefore a warning is
-returned.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">ots_create_tidy_data</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="at">years =</span> <span class="dv">2018</span><span class="sc">:</span><span class="dv">2019</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">importers =</span> <span class="fu">c</span>(<span class="st">&quot;chl&quot;</span>, <span class="st">&quot;Peru&quot;</span>, <span class="st">&quot;col&quot;</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">exporters =</span> <span class="fu">c</span>(<span class="st">&quot;arg&quot;</span>, <span class="st">&quot;Brazil&quot;</span>),</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="at">table =</span> <span class="st">&quot;itpde_imp_exp&quot;</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>)</span></code></pre></div>
 </div>
-<div id="bilateral-trade-at-aggregated-level-year---reporter---partner" class="section level3">
-<h3>Bilateral trade at aggregated level (Year - Reporter - Partner)</h3>
-<p>If we want Chile-Argentina bilateral trade at aggregated level in
-2018 and 2019:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>yrp <span class="ot">&lt;-</span> <span class="fu">ots_create_tidy_data</span>(</span>
+<div id="bilateral-trade-sector" class="section level3">
+<h3>Bilateral trade (sector)</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">ots_create_tidy_data</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="at">years =</span> <span class="dv">2018</span><span class="sc">:</span><span class="dv">2019</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="at">importers =</span> <span class="fu">c</span>(<span class="st">&quot;chl&quot;</span>, <span class="st">&quot;Peru&quot;</span>, <span class="st">&quot;col&quot;</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="at">exporters =</span> <span class="fu">c</span>(<span class="st">&quot;arg&quot;</span>, <span class="st">&quot;Brazil&quot;</span>),</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="at">table =</span> <span class="st">&quot;itpde_imp_exp_sec&quot;</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="aggregate-trade-industry" class="section level3">
+<h3>Aggregate trade (industry)</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">ots_create_tidy_data</span>(</span>
 <span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="at">years =</span> <span class="dv">2018</span><span class="sc">:</span><span class="dv">2019</span>,</span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="at">reporters =</span> <span class="fu">c</span>(<span class="st">&quot;chl&quot;</span>, <span class="st">&quot;per&quot;</span>),</span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="at">partners =</span> <span class="st">&quot;arg&quot;</span>,</span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="at">table =</span> <span class="st">&quot;yrp&quot;</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="at">importers =</span> <span class="fu">c</span>(<span class="st">&quot;chl&quot;</span>, <span class="st">&quot;Peru&quot;</span>, <span class="st">&quot;col&quot;</span>),</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="at">exporters =</span> <span class="fu">c</span>(<span class="st">&quot;arg&quot;</span>, <span class="st">&quot;Brazil&quot;</span>),</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="at">table =</span> <span class="st">&quot;itpde_ind&quot;</span></span>
 <span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>)</span></code></pre></div>
-<p>This table accepts different years, reporters and partners just like
-<code>yrpc</code>.</p>
 </div>
-<div id="reporter-trade-at-commodity-level-year---reporter---commodity-code" class="section level3">
-<h3>Reporter trade at commodity level (Year - Reporter - Commodity
-Code)</h3>
-<p>If we want Chilean trade at commodity level in 2019 with respect to
-commodity “010121” which means “Horses; live, pure-bred breeding
-animals”:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>yrc <span class="ot">&lt;-</span> <span class="fu">ots_create_tidy_data</span>(</span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="at">years =</span> <span class="dv">2019</span>,</span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="at">reporters =</span> <span class="st">&quot;chl&quot;</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="at">commodities =</span> <span class="st">&quot;010121&quot;</span>,</span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="at">table =</span> <span class="st">&quot;yrc&quot;</span></span>
-<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>)</span></code></pre></div>
-<p>This table accepts different years, reporters and commodity codes
-just like <code>yrpc</code>.</p>
-<p>All the variables from this table are documented at <a href="https://tradestatistics.io">tradestatistics.io</a>.</p>
-</div>
-<div id="reporter-trade-at-aggregated-level-year---reporter" class="section level3">
-<h3>Reporter trade at aggregated level (Year - Reporter)</h3>
-<p>If we want the aggregated trade of Chile, Argentina and Peru in 2018
-and 2019:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>yr <span class="ot">&lt;-</span> <span class="fu">ots_create_tidy_data</span>(</span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="at">years =</span> <span class="dv">2018</span><span class="sc">:</span><span class="dv">2019</span>,</span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="at">reporters =</span> <span class="fu">c</span>(<span class="st">&quot;chl&quot;</span>, <span class="st">&quot;arg&quot;</span>, <span class="st">&quot;per&quot;</span>),</span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="at">table =</span> <span class="st">&quot;yr&quot;</span></span>
-<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>)</span></code></pre></div>
-<p>This table accepts different years and reporters just like
-<code>yrpc</code>.</p>
-<p>All the variables from this table are documented at <a href="https://tradestatistics.io">tradestatistics.io</a>.</p>
-</div>
-<div id="commodity-trade-at-aggregated-level-year---commodity-code" class="section level3">
-<h3>Commodity trade at aggregated level (Year - Commodity Code)</h3>
-<p>If we want all commodities traded in 2019:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>yc <span class="ot">&lt;-</span> <span class="fu">ots_create_tidy_data</span>(</span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="at">years =</span> <span class="dv">2019</span>,</span>
-<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="at">table =</span> <span class="st">&quot;yc&quot;</span></span>
-<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>)</span></code></pre></div>
-<p>If we want the traded values of the commodity “010121” which means
-“Horses; live, pure-bred breeding animals” in 2019:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>yc2 <span class="ot">&lt;-</span> <span class="fu">ots_create_tidy_data</span>(</span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="at">years =</span> <span class="dv">2019</span>,</span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="at">commodities =</span> <span class="st">&quot;010121&quot;</span>,</span>
-<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="at">table =</span> <span class="st">&quot;yc&quot;</span></span>
-<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>)</span></code></pre></div>
-<p>This table accepts different years just like <code>yrpc</code>.</p>
-</div>
-</div>
-<div id="inflation-adjustment" class="section level2">
-<h2>Inflation adjustment</h2>
-<p>Taking the <code>yr</code> table from above, we can use
-<code>ots_gdp_deflator_adjustment()</code> to convert dollars from 2018
-and 2019 to dollars of 2000:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>inflation <span class="ot">&lt;-</span> <span class="fu">ots_gdp_deflator_adjustment</span>(yr, <span class="at">reference_year =</span> <span class="dv">2000</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="fu">as_tibble</span>(inflation)</span></code></pre></div>
 </div>
 </div>
 
